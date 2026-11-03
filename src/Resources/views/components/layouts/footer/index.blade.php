@@ -33,7 +33,7 @@
                 </span>
                 
                 <p class="mt-3 max-w-sm text-sm text-[#52525b] leading-relaxed">
-                    Cosmética profesional, esmaltes de alta pigmentación y productos exclusivos para artistas del nail art y salones de belleza.
+                    @lang('beauty::app.footer.brand-description')
                 </p>
 
                 {!! view_render_event('bagisto.shop.layout.footer.newsletter_subscription.before') !!}
@@ -41,10 +41,10 @@
                 @if (core()->getConfigData('customer.settings.newsletter.subscription'))
                     <div class="mt-8">
                         <p class="text-xs font-semibold uppercase tracking-wider text-[#71717a]">
-                            Únete al club exclusivo
+                            @lang('beauty::app.footer.newsletter-badge')
                         </p>
                         <p class="mt-1 text-sm text-[#52525b]">
-                            Recibe lanzamientos de temporada, técnicas de manicura y ofertas privadas.
+                            @lang('beauty::app.footer.newsletter-caption')
                         </p>
 
                         <x-shop::form
@@ -56,7 +56,7 @@
                                     type="email"
                                     name="email"
                                     rules="required|email"
-                                    placeholder="Ingresa tu correo electrónico"
+                                    placeholder="{{ trans('beauty::app.footer.email-placeholder') }}"
                                     class="w-full rounded-full border-[#d4a373]/40 bg-white px-5 py-2.5 text-sm placeholder:text-[#a1a1aa] focus:border-[#18181b] focus:ring-[#18181b]"
                                 />
                             </x-shop::form.control-group>
@@ -65,7 +65,7 @@
                                 type="submit"
                                 class="inline-flex items-center justify-center rounded-full bg-[#18181b] px-6 py-2.5 text-xs font-semibold uppercase tracking-wider text-white transition-colors hover:bg-[#3f3f46] focus:outline-hidden"
                             >
-                                Suscribirme
+                                @lang('beauty::app.footer.subscribe')
                             </button>
                         </x-shop::form>
                     </div>
@@ -96,7 +96,7 @@
                 @else
                     {{-- Default Beauty Fallback Links if section is empty --}}
                     <div>
-                        <h4 class="text-xs font-semibold uppercase tracking-wider text-[#71717a]">Colecciones</h4>
+                        <h4 class="text-xs font-semibold uppercase tracking-wider text-[#71717a]">@lang('beauty::app.footer.collections')</h4>
                         <ul class="mt-4 space-y-2.5 text-sm text-[#52525b]">
                             <li><a href="{{ url('/') }}" class="hover:text-[#18181b]">Esmaltes Semipermanentes</a></li>
                             <li><a href="{{ url('/') }}" class="hover:text-[#18181b]">Geles & Acrílicos</a></li>
@@ -106,7 +106,7 @@
                     </div>
 
                     <div>
-                        <h4 class="text-xs font-semibold uppercase tracking-wider text-[#71717a]">Atención</h4>
+                        <h4 class="text-xs font-semibold uppercase tracking-wider text-[#71717a]">@lang('beauty::app.footer.support')</h4>
                         <ul class="mt-4 space-y-2.5 text-sm text-[#52525b]">
                             <li><a href="{{ url('/') }}" class="hover:text-[#18181b]">Guía de Aplicación</a></li>
                             <li><a href="{{ url('/') }}" class="hover:text-[#18181b]">Preguntas Frecuentes</a></li>
@@ -116,7 +116,7 @@
                     </div>
 
                     <div>
-                        <h4 class="text-xs font-semibold uppercase tracking-wider text-[#71717a]">Nosotros</h4>
+                        <h4 class="text-xs font-semibold uppercase tracking-wider text-[#71717a]">@lang('beauty::app.footer.about')</h4>
                         <ul class="mt-4 space-y-2.5 text-sm text-[#52525b]">
                             <li><a href="{{ url('/') }}" class="hover:text-[#18181b]">Filosofía de la Marca</a></li>
                             <li><a href="{{ url('/') }}" class="hover:text-[#18181b]">Para Profesionales</a></li>
@@ -130,15 +130,11 @@
         <!-- Bottom Bar: Legal & Payment Methods -->
         <div class="mt-16 flex flex-col items-center justify-between gap-4 border-t border-[#eae5db] pt-8 sm:flex-row">
             <p class="text-xs text-[#71717a]">
-                &copy; {{ date('Y') }} {{ $channel->name ?? 'Beauty & Nails' }}. Todos los derechos reservados.
+                &copy; {{ date('Y') }} {{ $channel->name ?? 'Beauty & Nails' }}. @lang('beauty::app.footer.copyright')
             </p>
 
             <div class="flex items-center gap-x-4 text-xs text-[#71717a]">
-                <span>Pago Seguro</span>
-                <span>•</span>
-                <span>Envíos Nacionales</span>
-                <span>•</span>
-                <span>Calidad Profesional Garantizada</span>
+                <span>@lang('beauty::app.footer.trust-badges')</span>
             </div>
         </div>
     </div>

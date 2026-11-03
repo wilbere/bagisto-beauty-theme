@@ -108,15 +108,15 @@
             <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 <div class="text-center max-w-3xl mx-auto">
                     <span class="inline-block rounded-full bg-[#d4a373]/20 px-4 py-1 text-xs font-semibold uppercase tracking-widest text-[#7f684e]">
-                        Nueva Colección de Temporada
+                        @lang('beauty::app.home.season-badge')
                     </span>
 
                     <h1 class="mt-6 font-editorial text-4xl font-bold tracking-tight text-[#18181b] sm:text-6xl">
-                        El Arte en Cada Detalle de tus Uñas
+                        @lang('beauty::app.home.hero-title')
                     </h1>
 
                     <p class="mt-6 text-base text-[#52525b] leading-relaxed max-w-2xl mx-auto">
-                        Fórmulas profesionales de alto brillo, secado rápido y pigmentación pura diseñadas para manicuristas exigentes y amantes del nail art.
+                        @lang('beauty::app.home.hero-description')
                     </p>
 
                     <div class="mt-10 flex items-center justify-center gap-4">
@@ -124,7 +124,7 @@
                             href="{{ route('shop.search.index') }}"
                             class="rounded-full bg-[#18181b] px-8 py-3.5 text-xs font-semibold uppercase tracking-wider text-white shadow-xs transition-colors hover:bg-[#d4a373]"
                         >
-                            Explorar Esmaltes & Geles
+                            @lang('beauty::app.home.explore-cta')
                         </a>
                     </div>
                 </div>

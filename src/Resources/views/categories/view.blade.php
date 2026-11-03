@@ -28,9 +28,13 @@
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <!-- Breadcrumbs -->
             @if (core()->getConfigData('general.general.breadcrumbs.shop'))
-                <div class="mb-4 text-xs text-[#71717a]">
-                    <x-shop::breadcrumbs name="category" :entity="$category" />
-                </div>
+                <nav aria-label="Breadcrumb" class="mb-4 flex items-center gap-2 text-xs text-[#71717a]">
+                    <a href="{{ route('shop.home.index') }}" class="hover:text-[#18181b] transition-colors">
+                        @lang('shop::app.customers.account.home')
+                    </a>
+                    <span class="text-[#a1a1aa]">/</span>
+                    <span class="font-medium text-[#18181b]">{{ $category->name }}</span>
+                </nav>
             @endif
 
             <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
@@ -107,7 +111,7 @@
                                         <x-shop::products.card
                                             ::mode="'grid'"
                                             v-for="product in products"
-                                            :key="product.id"
+                                            ::key="product.id"
                                         />
                                     </div>
 
@@ -118,7 +122,7 @@
                                         <x-shop::products.card
                                             ::mode="'list'"
                                             v-for="product in products"
-                                            :key="product.id"
+                                            ::key="product.id"
                                         />
                                     </div>
 
@@ -129,7 +133,7 @@
                                             class="rounded-full border border-[#18181b] bg-white px-8 py-3 text-xs font-semibold uppercase tracking-wider text-[#18181b] transition-all hover:bg-[#18181b] hover:text-white"
                                             @click="loadMore"
                                         >
-                                            Cargar Más Productos
+                                            @lang('beauty::app.products.load-more')
                                         </button>
                                     </div>
                                 </template>
@@ -142,11 +146,11 @@
                                         </div>
 
                                         <h3 class="mt-4 font-editorial text-xl font-semibold text-[#18181b]">
-                                            No se encontraron productos
+                                            @lang('beauty::app.products.no-products-found')
                                         </h3>
 
                                         <p class="mt-1 text-xs text-[#71717a] max-w-sm">
-                                            Intenta ajustar o remover los filtros seleccionados para ver más tonos y colecciones.
+                                            @lang('beauty::app.products.no-products-help')
                                         </p>
 
                                         <button
@@ -154,7 +158,7 @@
                                             class="mt-6 rounded-full bg-[#18181b] px-6 py-2.5 text-xs font-semibold uppercase tracking-wider text-white transition-colors hover:bg-[#d4a373]"
                                             @click="clearFilters('filter', '')"
                                         >
-                                            Restablecer Filtros
+                                            @lang('beauty::app.products.reset-filters')
                                         </button>
                                     </div>
                                 </template>

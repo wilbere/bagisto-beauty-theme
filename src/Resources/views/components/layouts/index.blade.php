@@ -69,7 +69,7 @@
             href="#main"
             class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:rounded-sm focus:bg-[#18181b] focus:px-4 focus:py-2 focus:text-white shadow-lg transition-transform"
         >
-            Saltar al contenido principal
+            @lang('beauty::app.products.skip-to-main')
         </a>
 
         <div id="app" class="flex min-h-screen flex-col">

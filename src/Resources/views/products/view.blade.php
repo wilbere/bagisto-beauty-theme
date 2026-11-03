@@ -2,8 +2,10 @@
 @inject ('productViewHelper', \Webkul\Product\Helpers\View::class)
 
 @php
+    $totalRatings = $reviewHelper->getTotalRating($product);
+    $totalReviews = $reviewHelper->getTotalReviews($product);
     $avgRatings = $reviewHelper->getAverageRating($product);
-    $totalRatings = $reviewHelper->getTotalFeedback($product);
+    $percentageRatings = $reviewHelper->getPercentageRating($product);
     $customAttributeValues = $productViewHelper->getAdditionalData($product);
     $attributeData = collect($customAttributeValues)->filter(fn ($item) => ! empty($item['value']));
 @endphp
@@ -149,7 +151,7 @@
                                         :total="$totalRatings"
                                         ::rating="true"
                                     />
-                                    <span class="text-xs text-[#71717a] hover:underline">({{ $totalRatings }} opiniones)</span>
+                                    <span class="text-xs text-[#71717a] hover:underline">({{ $totalRatings }} @lang('beauty::app.products.opinions'))</span>
                                 </div>
                             @endif
 
@@ -206,7 +208,7 @@
                                         :disabled="!{{ $product->isSaleable(1) ? 'true' : 'false' }} || isStoring.addToCart"
                                         @click="is_buy_now = 0"
                                     >
-                                        <span v-if="isStoring.addToCart">Agregando a la bolsa...</span>
+                                        <span v-if="isStoring.addToCart">@lang('beauty::app.products.adding-to-cart')</span>
                                         <span v-else>@lang('shop::app.products.view.add-to-cart')</span>
                                     </button>
 
@@ -232,7 +234,7 @@
                                         :disabled="!{{ $product->isSaleable(1) ? 'true' : 'false' }} || isStoring.buyNow"
                                         @click="is_buy_now = 1"
                                     >
-                                        <span v-if="isStoring.buyNow">Procesando...</span>
+                                        <span v-if="isStoring.buyNow">@lang('beauty::app.products.processing')</span>
                                         <span v-else>@lang('shop::app.products.view.buy-now')</span>
                                     </button>
                                 @endif
@@ -245,25 +247,25 @@
                                         <svg class="h-4 w-4 text-[#d4a373]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                                         </svg>
-                                        <span>Fórmula 100% Profesional</span>
+                                        <span>@lang('beauty::app.services.pro-grade')</span>
                                     </div>
                                     <div class="flex items-center gap-2">
                                         <svg class="h-4 w-4 text-[#d4a373]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                                         </svg>
-                                        <span>No testeado en animales</span>
+                                        <span>@lang('beauty::app.services.cruelty-free')</span>
                                     </div>
                                     <div class="flex items-center gap-2">
                                         <svg class="h-4 w-4 text-[#d4a373]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                                         </svg>
-                                        <span>Despacho seguro antigoteo</span>
+                                        <span>@lang('beauty::app.services.safe-packaging')</span>
                                     </div>
                                     <div class="flex items-center gap-2">
                                         <svg class="h-4 w-4 text-[#d4a373]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                                         </svg>
-                                        <span>Asesoría en aplicación</span>
+                                        <span>@lang('beauty::app.services.support')</span>
                                     </div>
                                 </div>
                             </div>
@@ -304,7 +306,8 @@
 
                 data() {
                     return {
-                        isWishlist: Boolean("{{ $product->isWishlist() }}"),
+                        isWishlist: false,
+                        isCustomer: Boolean("{{ auth()->guard('customer')->check() }}"),
                         is_buy_now: 0,
                         isStoring: {
                             addToCart: false,
@@ -313,7 +316,21 @@
                     };
                 },
 
+                mounted() {
+                    this.checkWishlistStatus();
+                },
+
                 methods: {
+                    checkWishlistStatus() {
+                        if (this.isCustomer) {
+                            this.$axios.get('{{ route('shop.api.customers.account.wishlist.index') }}')
+                                .then(response => {
+                                    const wishlistItems = response.data.data || [];
+                                    this.isWishlist = Boolean(wishlistItems.find(item => item.product.id == "{{ $product->id }}")?.product?.is_wishlist);
+                                })
+                                .catch(() => {});
+                        }
+                    },
                     addToCart(params) {
                         const isBuyNow = this.is_buy_now;
 

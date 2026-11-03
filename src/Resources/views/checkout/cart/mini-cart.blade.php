@@ -46,10 +46,10 @@
                     <div class="flex flex-col gap-1 border-b border-[#eae5db]/60 pb-4">
                         <div class="flex items-center justify-between">
                             <p class="font-editorial text-2xl font-semibold tracking-tight text-[#18181b]">
-                                Tu Carrito de Belleza
+                                @lang('beauty::app.cart.title')
                             </p>
                             <span class="text-xs text-[#71717a]" v-if="cart?.items?.length">
-                                (@{{ cart.items.length }} @{{ cart.items.length === 1 ? 'producto' : 'productos' }})
+                                (@{{ cart.items.length }})
                             </span>
                         </div>
 
@@ -57,10 +57,10 @@
                         <div class="mt-3 rounded-xl border border-[#eae5db] bg-[#f7f5f0] p-3" v-if="cart?.subtotal">
                             <div class="flex justify-between text-xs text-[#18181b]">
                                 <span v-if="parseFloat(cart.subtotal) >= 50" class="font-medium text-[#78866b]">
-                                    ¡Felicidades! Tienes <strong>Envío Gratis</strong>
+                                    {!! trans('beauty::app.cart.free-shipping-success') !!}
                                 </span>
                                 <span v-else class="text-[#52525b]">
-                                    Te faltan <strong>$@{{ (50 - parseFloat(cart.subtotal)).toFixed(2) }}</strong> para <strong>Envío Gratis</strong>
+                                    {!! trans('beauty::app.cart.free-shipping-remaining', ['amount' => '$' . '@{{ (50 - parseFloat(cart.subtotal)).toFixed(2) }}']) !!}
                                 </span>
                                 <span class="font-semibold text-[#18181b]">@{{ Math.min(Math.round((parseFloat(cart.subtotal) / 50) * 100), 100) }}%</span>
                             </div>
@@ -158,18 +158,18 @@
                         </div>
 
                         <h3 class="mt-4 font-editorial text-lg font-semibold text-[#18181b]">
-                            Tu bolsa está vacía
+                            @lang('beauty::app.cart.empty-title')
                         </h3>
 
                         <p class="mt-1 text-xs text-[#71717a] max-w-xs">
-                            Descubre nuestros esmaltes, geles y tratamientos profesionales para comenzar.
+                            @lang('beauty::app.cart.empty-description')
                         </p>
 
                         <a
                             href="{{ route('shop.home.index') }}"
                             class="mt-6 rounded-full bg-[#18181b] px-6 py-2.5 text-xs font-semibold uppercase tracking-wider text-white transition-colors hover:bg-[#d4a373]"
                         >
-                            Explorar Colección
+                            @lang('beauty::app.cart.explore-collection')
                         </a>
                     </div>
 
@@ -185,12 +185,12 @@
                         v-if="cart?.items?.length"
                     >
                         <div class="flex items-center justify-between text-base font-semibold text-[#18181b]">
-                            <span>Subtotal</span>
+                            <span>@lang('beauty::app.cart.subtotal')</span>
                             <span>@{{ cart.formatted_subtotal }}</span>
                         </div>
 
                         <p class="mt-1 text-[11px] text-[#71717a]">
-                            Impuestos y costo de envío calculados en el checkout.
+                            @lang('beauty::app.cart.tax-shipping-note')
                         </p>
 
                         <div class="mt-4 grid gap-2">
@@ -198,14 +198,14 @@
                                 href="{{ route('shop.checkout.onepage.index') }}"
                                 class="flex w-full items-center justify-center rounded-full bg-[#18181b] py-3 text-xs font-semibold uppercase tracking-wider text-white shadow-xs transition-colors hover:bg-[#d4a373]"
                             >
-                                Finalizar Pedido
+                                @lang('beauty::app.cart.checkout')
                             </a>
 
                             <a
                                 href="{{ route('shop.checkout.cart.index') }}"
                                 class="flex w-full items-center justify-center rounded-full border border-[#eae5db] bg-white py-2.5 text-xs font-semibold uppercase tracking-wider text-[#18181b] transition-colors hover:bg-[#f7f5f0]"
                             >
-                                Ver Carrito Completo
+                                @lang('beauty::app.cart.view-cart')
                             </a>
                         </div>
                     </div>

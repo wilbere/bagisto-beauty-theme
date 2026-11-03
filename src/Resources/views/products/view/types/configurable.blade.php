@@ -30,7 +30,7 @@
                         </span>
 
                         <span class="text-[#71717a]" v-if="getSelectedOptionLabel(attribute)">
-                            Seleccionado: <strong class="text-[#18181b]">@{{ getSelectedOptionLabel(attribute) }}</strong>
+                            @lang('beauty::app.products.selected'): <strong class="text-[#18181b]">@{{ getSelectedOptionLabel(attribute) }}</strong>
                         </span>
                     </div>
 
@@ -48,7 +48,7 @@
                             :disabled="attribute.disabled"
                             @change="configure(attribute, $event.target.value)"
                         >
-                            <option value="">Selecciona @{{ attribute.label }}</option>
+                            <option value="">@lang('beauty::app.products.select-option', ['attribute' => '']) @{{ attribute.label }}</option>
                             <option
                                 v-for='(option, index) in attribute.options'
                                 :value="option.id"

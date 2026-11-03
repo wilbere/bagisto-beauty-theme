@@ -1,6 +1,5 @@
 /node_modules/
 /vendor/
-/publishable/build/
 *.hot
 .DS_Store
 *.log

@@ -57,8 +57,8 @@
                         </svg>
                     </div>
                     <div>
-                        <h4 class="text-xs font-semibold uppercase tracking-wider text-[#18181b]">Grado Profesional</h4>
-                        <p class="text-xs text-[#71717a]">Pigmentación y durabilidad de salón</p>
+                        <h4 class="text-xs font-semibold uppercase tracking-wider text-[#18181b]">@lang('beauty::app.services.pro-grade')</h4>
+                        <p class="text-xs text-[#71717a]">@lang('beauty::app.services.pro-grade-sub')</p>
                     </div>
                 </div>
 
@@ -69,8 +69,8 @@
                         </svg>
                     </div>
                     <div>
-                        <h4 class="text-xs font-semibold uppercase tracking-wider text-[#18181b]">Envío Protegido</h4>
-                        <p class="text-xs text-[#71717a]">Embalaje especial antigoteo</p>
+                        <h4 class="text-xs font-semibold uppercase tracking-wider text-[#18181b]">@lang('beauty::app.services.safe-packaging')</h4>
+                        <p class="text-xs text-[#71717a]">@lang('beauty::app.services.safe-packaging-sub')</p>
                     </div>
                 </div>
 
@@ -81,8 +81,8 @@
                         </svg>
                     </div>
                     <div>
-                        <h4 class="text-xs font-semibold uppercase tracking-wider text-[#18181b]">Despacho 24/48h</h4>
-                        <p class="text-xs text-[#71717a]">Entregas rápidas a todo el país</p>
+                        <h4 class="text-xs font-semibold uppercase tracking-wider text-[#18181b]">@lang('beauty::app.services.fast-dispatch')</h4>
+                        <p class="text-xs text-[#71717a]">@lang('beauty::app.services.fast-dispatch-sub')</p>
                     </div>
                 </div>
 
@@ -93,8 +93,8 @@
                         </svg>
                     </div>
                     <div>
-                        <h4 class="text-xs font-semibold uppercase tracking-wider text-[#18181b]">Compra Segura</h4>
-                        <p class="text-xs text-[#71717a]">Múltiples métodos y encriptación</p>
+                        <h4 class="text-xs font-semibold uppercase tracking-wider text-[#18181b]">@lang('beauty::app.services.secure-payment')</h4>
+                        <p class="text-xs text-[#71717a]">@lang('beauty::app.services.secure-payment-sub')</p>
                     </div>
                 </div>
             </div>
