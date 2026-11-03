@@ -50,7 +50,7 @@ php artisan vendor:publish --tag=beauty-theme-assets
 
 ## Desarrollo Local con Podman / Docker
 
-Si estás desarrollando el tema localmente junto a una instancia de Bagisto (como `/home/wilbere/workspace/demo`):
+Si estás desarrollando el tema localmente junto a una instancia de Bagisto (como `/home/user/workspace/demo:
 
 ### 1. Mapeo de Volumen en `compose.yaml`
 Añade el montaje del directorio local del tema dentro del contenedor con la etiqueta `:z` (obligatorio para SELinux Enforcing en Fedora):
@@ -60,7 +60,7 @@ services:
   app:
     volumes:
       - .:/var/www/html:z
-      - ../theme-bagisto:/var/www/html/packages/wilbere/beauty-theme:z
+      - ../theme-bagisto:/var/www/html/packages/user/beauty-theme:z
 ```
 
 ### 2. Registrar en Composer Local
