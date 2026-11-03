@@ -1,0 +1,40 @@
+{
+    "name": "wilbere/bagisto-beauty-theme",
+    "description": "Luxury Beauty & Nail Art Storefront Theme for Bagisto 2.5",
+    "type": "bagisto-theme",
+    "keywords": [
+        "bagisto",
+        "bagisto-theme",
+        "laravel",
+        "ecommerce",
+        "beauty",
+        "nails",
+        "nail-art",
+        "tailwind-css-v4"
+    ],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Wilbere",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^8.4",
+        "illuminate/support": "^12.0|^13.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Wilbere\\BeautyTheme\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Wilbere\\BeautyTheme\\Providers\\BeautyThemeServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}

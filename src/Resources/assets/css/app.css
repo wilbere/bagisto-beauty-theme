@@ -1,0 +1,86 @@
+@import "tailwindcss";
+
+@theme {
+  --font-serif: "Cormorant Garamond", "Playfair Display", "DM Serif Display", Georgia, serif;
+  --font-sans: "Plus Jakarta Sans", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+
+  /* Luxury Beauty & Nails Palette */
+  --color-beauty-50: #fdfbf7;
+  --color-beauty-100: #f7f4ee;
+  --color-beauty-200: #ede8dc;
+  --color-beauty-300: #ded5c3;
+  --color-beauty-400: #c9baa1;
+  --color-beauty-500: #b59f7f;
+  --color-beauty-600: #9e8464;
+  --color-beauty-700: #7f684e;
+  --color-beauty-800: #62503d;
+  --color-beauty-900: #4a3c2e;
+
+  --color-ink-950: #121214;
+  --color-ink-900: #18181b;
+  --color-ink-800: #27272a;
+  --color-ink-600: #52525b;
+  --color-ink-400: #a1a1aa;
+
+  --color-accent-nude: #d4a373;
+  --color-accent-blush: #e5b9ad;
+  --color-accent-gold: #c5a880;
+  --color-accent-sage: #8a9a86;
+}
+
+/* Custom Base Styles */
+@layer base {
+  html {
+    font-family: var(--font-sans);
+    color: var(--color-ink-900);
+    background-color: var(--color-beauty-50);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    scroll-behavior: smooth;
+  }
+
+  h1, h2, h3, .font-editorial {
+    font-family: var(--font-serif);
+    letter-spacing: -0.01em;
+  }
+}
+
+/* Custom Component Utilities */
+@layer components {
+  /* Product Card Aspect Ratio (4:5 is ideal for beauty & nail polish bottles) */
+  .aspect-product {
+    aspect-ratio: 4 / 5;
+  }
+
+  /* Color / Texture Swatch Button */
+  .swatch-item {
+    position: relative;
+    border-radius: 9999px;
+    transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .swatch-item:hover {
+    transform: scale(1.15);
+  }
+
+  .swatch-item.active {
+    box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px var(--color-ink-900);
+    transform: scale(1.1);
+  }
+
+  /* Hide scrollbar for neat horizontal scroll carousels while maintaining touch gestures */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  /* Luxury subtle blur backdrops */
+  .glass-header {
+    background-color: rgba(253, 251, 247, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+}
