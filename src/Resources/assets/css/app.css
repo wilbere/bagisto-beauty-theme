@@ -1,4 +1,4 @@
-@import "tailwindcss";
+@import "tailwindcss" source("../../../");
 
 @theme {
   --font-serif: "Cormorant Garamond", "Playfair Display", "DM Serif Display", Georgia, serif;
@@ -26,6 +26,74 @@
   --color-accent-blush: #e5b9ad;
   --color-accent-gold: #c5a880;
   --color-accent-sage: #8a9a86;
+
+  /* Bagisto Shop Icons */
+  --icon-uncheck:                "\e941";
+  --icon-check-box:              "\e90f";
+  --icon-radio-unselect:         "\e931";
+  --icon-radio-select:           "\e930";
+  --icon-gdpr-safe:              "\e84f";
+  --icon-checkout-address:       "\e944";
+  --icon-edit:                   "\e943";
+  --icon-arrow-down:             "\e901";
+  --icon-arrow-left-stylish:     "\e902";
+  --icon-arrow-left:             "\e903";
+  --icon-arrow-right-stylish:    "\e904";
+  --icon-arrow-right:            "\e905";
+  --icon-arrow-up:               "\e906";
+  --icon-bin:                    "\e908";
+  --icon-calendar:               "\e90a";
+  --icon-camera:                 "\e90c";
+  --icon-cancel:                 "\e90d";
+  --icon-cart:                   "\e90e";
+  --icon-swap:                   "\e910";
+  --icon-compare:                "\e911";
+  --icon-dollar-sign:            "\e913";
+  --icon-double-arrow:           "\e914";
+  --icon-download:               "\e915";
+  --icon-error:                  "\e917";
+  --icon-eye:                    "\e918";
+  --icon-funnel:                 "\e919";
+  --icon-filter:                 "\e91b";
+  --icon-flate-rate:             "\e91c";
+  --icon-grid-view-fill:         "\e91e";
+  --icon-grid-view:              "\e91f";
+  --icon-hamburger:              "\e920";
+  --icon-heart-fill:             "\e923";
+  --icon-heart:                  "\e924";
+  --icon-listing-fill:           "\e927";
+  --icon-listing:                "\e928";
+  --icon-location:               "\e929";
+  --icon-minus:                  "\e92a";
+  --icon-more:                   "\e92b";
+  --icon-orders:                 "\e92c";
+  --icon-pen:                    "\e92d";
+  --icon-plus:                   "\e92e";
+  --icon-product:                "\e92f";
+  --icon-search:                 "\e933";
+  --icon-share:                  "\e934";
+  --icon-sort:                   "\e935";
+  --icon-star-fill:              "\e938";
+  --icon-star:                   "\e939";
+  --icon-support:                "\e93a";
+  --icon-toast-done:             "\e93c";
+  --icon-toast-error:            "\e93d";
+  --icon-toast-exclamation-mark: "\e93e";
+  --icon-toast-info:             "\e93f";
+  --icon-truck:                  "\e940";
+  --icon-users:                  "\e942";
+}
+
+@utility icon-* {
+  &::before { content: --value(--icon-*); }
+}
+
+@font-face {
+  font-family: "bagisto-shop";
+  src: url("../fonts/bagisto-shop.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
 }
 
 /* Custom Base Styles */
@@ -47,6 +115,19 @@
 
 /* Custom Component Utilities */
 @layer components {
+  [class^="icon-"],
+  [class*=" icon-"] {
+    font-family: "bagisto-shop" !important;
+    speak: never;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1 !important;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
   /* Product Card Aspect Ratio (4:5 is ideal for beauty & nail polish bottles) */
   .aspect-product {
     aspect-ratio: 4 / 5;
