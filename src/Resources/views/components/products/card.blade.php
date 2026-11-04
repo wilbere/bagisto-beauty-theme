@@ -11,11 +11,11 @@
     >
         <!-- Luxury Beauty Product Card (Grid Mode) -->
         <div
-            class="group relative flex w-full flex-col overflow-hidden rounded-2xl border border-[#eae5db]/60 bg-white p-3 transition-all duration-300 hover:border-[#d4a373]/50 hover:shadow-lg"
+            class="group relative flex w-full flex-col justify-between overflow-hidden rounded-2xl border border-[#ede8dc]/80 bg-[#fdfbf7] p-3 sm:p-3.5 transition-all duration-300 hover:border-[#9e8464]/50 hover:bg-white hover:shadow-xl hover:shadow-[#18181b]/5 hover:-translate-y-0.5"
             v-if="mode != 'list'"
         >
             <!-- Media / Image Container (4:5 Aspect Ratio) -->
-            <div class="relative w-full overflow-hidden rounded-xl bg-[#f7f5f0] aspect-product">
+            <div class="relative w-full overflow-hidden rounded-xl bg-[#f7f5f0] aspect-[4/5]">
                 {!! view_render_event('bagisto.shop.components.products.card.image.before') !!}
 
                 <a
@@ -24,7 +24,7 @@
                     class="block h-full w-full"
                 >
                     <x-shop::media.images.lazy
-                        class="h-full w-full object-cover object-center transition-transform duration-500 ease-out group-hover:scale-105"
+                        class="h-full w-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-105"
                         ::src="product.base_image.medium_image_url"
                         ::srcset="`
                             ${product.base_image.small_image_url} 150w,
@@ -42,16 +42,16 @@
                 {!! view_render_event('bagisto.shop.components.products.card.image.after') !!}
 
                 <!-- Badges (Top Left) -->
-                <div class="absolute top-2.5 left-2.5 flex flex-col gap-1.5 z-10">
+                <div class="absolute top-2.5 left-2.5 flex flex-col gap-1.5 z-10 pointer-events-none">
                     <span
-                        class="inline-block rounded-full bg-[#18181b] px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-white shadow-xs"
+                        class="inline-block rounded-full bg-[#18181b]/90 backdrop-blur-md px-2.5 py-0.5 text-[9px] font-semibold uppercase tracking-widest text-white shadow-xs"
                         v-if="product.on_sale"
                     >
                         @lang('shop::app.components.products.card.sale')
                     </span>
 
                     <span
-                        class="inline-block rounded-full bg-[#d4a373] px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-white shadow-xs"
+                        class="inline-block rounded-full bg-[#9e8464]/90 backdrop-blur-md px-2.5 py-0.5 text-[9px] font-semibold uppercase tracking-widest text-white shadow-xs"
                         v-else-if="product.is_new"
                     >
                         @lang('shop::app.components.products.card.new')
@@ -63,8 +63,8 @@
                     @if (core()->getConfigData('customer.settings.wishlist.wishlist_option'))
                         <button
                             type="button"
-                            class="flex h-8 w-8 items-center justify-center rounded-full bg-white/90 text-sm text-[#18181b] shadow-xs backdrop-blur-xs transition-transform hover:scale-110 hover:text-red-500"
-                            :class="product.is_wishlist ? 'text-red-500' : ''"
+                            class="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-white/85 text-xs text-[#18181b] shadow-xs backdrop-blur-md border border-[#ede8dc]/60 transition-transform hover:scale-110 hover:bg-white hover:text-red-500"
+                            :class="product.is_wishlist ? 'text-red-500!' : ''"
                             @click="addToWishlist()"
                             aria-label="@lang('shop::app.components.products.card.add-to-wishlist')"
                         >
@@ -75,7 +75,7 @@
                     @if (core()->getConfigData('catalog.products.settings.compare_option'))
                         <button
                             type="button"
-                            class="flex h-8 w-8 items-center justify-center rounded-full bg-white/90 text-sm text-[#18181b] shadow-xs backdrop-blur-xs transition-transform hover:scale-110"
+                            class="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-white/85 text-xs text-[#18181b] shadow-xs backdrop-blur-md border border-[#ede8dc]/60 transition-transform hover:scale-110 hover:bg-white hover:text-[#9e8464]"
                             @click="addToCompare(product.id)"
                             aria-label="@lang('shop::app.components.products.card.add-to-compare')"
                         >
@@ -85,9 +85,9 @@
                 </div>
 
                 <!-- Average Ratings Badge (Bottom Left of Media) -->
-                <div class="absolute bottom-2 left-2 z-10" v-if="product.ratings.total">
+                <div class="absolute bottom-2.5 left-2.5 z-10" v-if="product.ratings.total">
                     <x-shop::products.ratings
-                        class="rounded-full bg-white/90 px-2 py-0.5 text-[11px] shadow-xs backdrop-blur-xs"
+                        class="rounded-full bg-white/90 px-2 py-0.5 text-[10px] shadow-xs backdrop-blur-md border border-[#ede8dc]/40"
                         ::average="product.ratings.average"
                         ::total="product.ratings.total"
                         ::rating="false"
@@ -102,7 +102,7 @@
 
                     <a
                         :href="'{{ route('shop.product_or_category.index', ':slug') }}'.replace(':slug', product.url_key)"
-                        class="line-clamp-2 text-sm font-medium text-[#18181b] transition-colors hover:text-[#d4a373]"
+                        class="line-clamp-2 font-serif text-sm font-medium leading-snug text-[#18181b] transition-colors group-hover:text-[#9e8464] min-h-[2.5rem]"
                     >
                         @{{ product.name }}
                     </a>
@@ -115,7 +115,7 @@
                     {!! view_render_event('bagisto.shop.components.products.card.price.before') !!}
 
                     <div
-                        class="text-sm font-semibold text-[#18181b]"
+                        class="text-sm font-semibold tracking-tight text-[#18181b]"
                         v-html="product.price_html"
                     ></div>
 
@@ -125,11 +125,14 @@
                         <div class="mt-3">
                             <button
                                 type="button"
-                                class="w-full rounded-full bg-[#18181b] py-2 text-xs font-semibold uppercase tracking-wider text-white transition-all hover:bg-[#d4a373] disabled:cursor-not-allowed disabled:opacity-50"
+                                class="flex w-full cursor-pointer items-center justify-center gap-2 rounded-full border border-[#18181b] bg-transparent py-2 px-3 text-[11px] font-semibold uppercase tracking-widest text-[#18181b] transition-all duration-300 hover:bg-[#18181b] hover:text-white active:scale-98 disabled:cursor-not-allowed disabled:opacity-40"
                                 :disabled="!product.is_saleable || isAddingToCart"
                                 @click="addToCart()"
                             >
-                                <span v-if="isAddingToCart">Agregando...</span>
+                                <span v-if="isAddingToCart" class="flex items-center gap-1.5">
+                                    <span class="inline-block h-2.5 w-2.5 animate-spin rounded-full border-2 border-current border-t-transparent"></span>
+                                    <span>Agregando...</span>
+                                </span>
                                 <span v-else>@lang('shop::app.components.products.card.add-to-cart')</span>
                             </button>
                         </div>
@@ -138,26 +141,26 @@
             </div>
         </div>
 
-        <!-- List View Mode (Fall back gracefully to compact horizontal row) -->
+        <!-- List View Mode (Refined Horizontal Row) -->
         <div
-            class="flex gap-4 rounded-2xl border border-[#eae5db]/60 bg-white p-4 transition-all hover:shadow-md"
+            class="group flex gap-5 rounded-2xl border border-[#ede8dc]/80 bg-[#fdfbf7] p-4 transition-all duration-300 hover:border-[#9e8464]/50 hover:bg-white hover:shadow-lg"
             v-else
         >
-            <div class="relative h-32 w-28 shrink-0 overflow-hidden rounded-xl bg-[#f7f5f0]">
+            <div class="relative h-36 w-32 shrink-0 overflow-hidden rounded-xl bg-[#f7f5f0]">
                 <a :href="'{{ route('shop.product_or_category.index', ':slug') }}'.replace(':slug', product.url_key)">
                     <img
                         :src="product.base_image.medium_image_url"
                         :alt="product.base_image.alt"
-                        class="h-full w-full object-cover"
+                        class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                     />
                 </a>
             </div>
 
-            <div class="flex flex-1 flex-col justify-between">
+            <div class="flex flex-1 flex-col justify-between py-1">
                 <div>
                     <a
                         :href="'{{ route('shop.product_or_category.index', ':slug') }}'.replace(':slug', product.url_key)"
-                        class="text-base font-medium text-[#18181b] hover:text-[#d4a373]"
+                        class="font-serif text-base font-medium text-[#18181b] transition-colors hover:text-[#9e8464]"
                     >
                         @{{ product.name }}
                     </a>
@@ -168,10 +171,10 @@
                     ></div>
                 </div>
 
-                <div class="flex items-center gap-3">
+                <div class="flex items-center gap-3 pt-3">
                     <button
                         type="button"
-                        class="rounded-full bg-[#18181b] px-6 py-2 text-xs font-semibold uppercase tracking-wider text-white transition-colors hover:bg-[#d4a373]"
+                        class="cursor-pointer rounded-full border border-[#18181b] bg-transparent px-6 py-2 text-xs font-semibold uppercase tracking-widest text-[#18181b] transition-colors hover:bg-[#18181b] hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
                         :disabled="!product.is_saleable || isAddingToCart"
                         @click="addToCart()"
                     >

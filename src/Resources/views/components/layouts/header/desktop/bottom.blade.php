@@ -23,7 +23,33 @@
 
         {!! view_render_event('bagisto.shop.components.layouts.header.desktop.bottom.category.before') !!}
 
-        <v-desktop-category>
+        @php
+            $beautyCategories = cache()->remember('beauty_category_tree_' . core()->getCurrentChannel()->id . '_' . app()->getLocale(), 3600, function () {
+                $rootId = core()->getCurrentChannel()->root_category_id;
+                $categories = app(\Webkul\Category\Repositories\CategoryRepository::class)->getVisibleCategoryTree($rootId);
+
+                $formatter = function ($cats) use (&$formatter) {
+                    return $cats->map(function ($cat) use (&$formatter) {
+                        $translation = $cat->translate(app()->getLocale()) ?? $cat->translate('en') ?? $cat->translations->first();
+                        $name = $translation?->name ?? 'Categoría ' . $cat->id;
+                        $slug = $translation?->slug;
+                        $url = $slug ? route('shop.product_or_category.index', $slug) : '#';
+
+                        return [
+                            'id'       => $cat->id,
+                            'name'     => $name,
+                            'slug'     => $slug,
+                            'url'      => $url,
+                            'children' => $cat->children ? $formatter($cat->children) : [],
+                        ];
+                    });
+                };
+
+                return $formatter($categories);
+            });
+        @endphp
+
+        <v-desktop-category :initial-categories='@json($beautyCategories)'>
             <div class="flex items-center gap-4">
                 <span class="shimmer h-6 w-24 rounded-md" role="presentation"></span>
                 <span class="shimmer h-6 w-20 rounded-md" role="presentation"></span>
@@ -242,11 +268,11 @@
             <!-- Drawer Toggler Button -->
             <button
                 type="button"
-                class="flex h-12 cursor-pointer items-center gap-2 rounded-lg px-3 py-1.5 text-xs font-semibold uppercase tracking-wider text-[#18181b] transition-colors hover:bg-[#ede8dc]/50 hover:text-[#9e8464]"
+                class="flex cursor-pointer items-center gap-2.5 rounded-full border border-[#ede8dc] bg-[#f7f4ee] px-4 py-2 text-xs font-semibold uppercase tracking-wider text-[#18181b] transition-all hover:border-[#9e8464] hover:bg-white"
                 @click="toggleCategoryDrawer"
                 aria-label="Abrir catálogo de categorías"
             >
-                <span class="icon-hamburger text-lg" role="presentation"></span>
+                <span class="icon-hamburger text-base text-[#9e8464]" role="presentation"></span>
                 <span>@lang('shop::app.components.layouts.header.desktop.bottom.categories')</span>
             </button>
 
@@ -301,102 +327,148 @@
                 </div>
             </div>
 
-            <!-- Categories Side Drawer -->
-            <x-shop::drawer
-                position="left"
-                width="380px"
-                ::is-active="isDrawerActive"
-                @toggle="onDrawerToggle"
-                @close="onDrawerClose"
-            >
-                <x-slot:toggle></x-slot>
+            <!-- Categories Side Drawer (Slide-over Bespoke) -->
+            <teleport to="body">
+                <!-- Backdrop -->
+                <transition
+                    enter-active-class="transition-opacity ease-out duration-300"
+                    enter-from-class="opacity-0"
+                    enter-to-class="opacity-100"
+                    leave-active-class="transition-opacity ease-in duration-200"
+                    leave-from-class="opacity-100"
+                    leave-to-class="opacity-0"
+                >
+                    <div
+                        v-if="isDrawerActive"
+                        class="fixed inset-0 z-[999] bg-black/40 backdrop-blur-xs"
+                        @click="isDrawerActive = false"
+                        aria-hidden="true"
+                    ></div>
+                </transition>
 
-                <x-slot:header class="border-b border-[#ede8dc] bg-[#fdfbf7] px-6 py-4">
-                    <div class="flex items-center justify-between w-full">
-                        <p class="font-serif text-2xl font-medium tracking-tight text-[#18181b]">
-                            @lang('shop::app.components.layouts.header.desktop.bottom.categories')
-                        </p>
-                    </div>
-                </x-slot>
+                <!-- Slide-over Drawer -->
+                <transition
+                    enter-active-class="transition-transform ease-out duration-300"
+                    enter-from-class="-translate-x-full"
+                    enter-to-class="translate-x-0"
+                    leave-active-class="transition-transform ease-in duration-200"
+                    leave-from-class="translate-x-0"
+                    leave-to-class="-translate-x-full"
+                >
+                    <aside
+                        v-if="isDrawerActive"
+                        class="fixed inset-y-0 left-0 z-[1000] flex w-full max-w-[380px] flex-col border-r border-[#ede8dc] bg-[#fdfbf7] shadow-2xl"
+                        role="dialog"
+                        aria-modal="true"
+                        aria-label="@lang('shop::app.components.layouts.header.desktop.bottom.categories')"
+                    >
+                        <!-- Drawer Header: Title & Close Button -->
+                        <div class="flex items-center justify-between border-b border-[#ede8dc] bg-[#fdfbf7] px-6 py-4.5">
+                            <h2 class="font-editorial text-2xl font-bold tracking-tight text-[#18181b]">
+                                @lang('shop::app.components.layouts.header.desktop.bottom.categories')
+                            </h2>
 
-                <x-slot:content class="bg-[#fdfbf7] px-0! py-2">
-                    <div class="relative h-full overflow-hidden">
-                        <!-- Sliding container for depth navigation -->
-                        <div
-                            class="flex h-full transition-transform duration-300"
-                            :class="{
-                                'ltr:translate-x-0 rtl:translate-x-0': currentViewLevel !== 'third',
-                                'ltr:-translate-x-full rtl:translate-x-full': currentViewLevel === 'third'
-                            }"
-                        >
-                            <!-- Main Tree (Levels 1 & 2) -->
-                            <div class="h-[calc(100vh-100px)] w-full shrink-0 overflow-y-auto px-4 py-2">
-                                <div
-                                    v-for="category in categories"
-                                    :key="category.id"
-                                    class="mb-3 rounded-lg border border-[#ede8dc]/70 bg-white/70 p-1 transition-all"
-                                >
-                                    <div class="flex items-center justify-between px-3 py-2 transition-colors hover:text-[#9e8464]">
-                                        <a
-                                            :href="category.url"
-                                            class="text-sm font-semibold tracking-wide text-[#18181b]"
-                                        >
-                                            @{{ category.name }}
-                                        </a>
-                                    </div>
+                            <button
+                                type="button"
+                                class="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full text-[#18181b] transition-colors hover:bg-[#ede8dc]/60 hover:text-[#9e8464]"
+                                @click="isDrawerActive = false"
+                                aria-label="Cerrar menú de categorías"
+                            >
+                                <span class="icon-cancel text-lg"></span>
+                            </button>
+                        </div>
 
-                                    <!-- Subcategories -->
-                                    <div v-if="category.children && category.children.length" class="border-t border-[#ede8dc]/50 pt-1">
-                                        <div
-                                            v-for="secondLevelCategory in category.children"
-                                            :key="secondLevelCategory.id"
-                                            class="flex cursor-pointer items-center justify-between rounded-md px-3 py-1.5 text-xs text-[#62503d] transition-colors hover:bg-[#ede8dc]/40 hover:text-[#18181b]"
-                                            @click="showThirdLevel(secondLevelCategory, category, $event)"
-                                        >
-                                            <a :href="secondLevelCategory.url">
-                                                @{{ secondLevelCategory.name }}
+                        <!-- Drawer Body -->
+                        <div class="relative flex-1 overflow-hidden">
+                            <div
+                                class="flex h-full transition-transform duration-300"
+                                :class="{
+                                    'translate-x-0': currentViewLevel !== 'third',
+                                    '-translate-x-full': currentViewLevel === 'third'
+                                }"
+                            >
+                                <!-- Main View (Level 1 & Level 2) -->
+                                <div class="h-full w-full shrink-0 overflow-y-auto px-5 py-4 space-y-3">
+                                    <div
+                                        v-for="category in categories"
+                                        :key="category.id"
+                                        class="rounded-xl border border-[#ede8dc]/80 bg-white/70 p-2 transition-all hover:border-[#9e8464]/40 hover:bg-white"
+                                    >
+                                        <!-- Level 1 Category Row -->
+                                        <div class="flex items-center justify-between px-2.5 py-1.5">
+                                            <a
+                                                :href="category.url"
+                                                class="text-sm font-semibold tracking-wide text-[#18181b] hover:text-[#9e8464] transition-colors"
+                                            >
+                                                @{{ category.name }}
                                             </a>
+                                            <a
+                                                :href="category.url"
+                                                class="text-[11px] font-medium text-[#9e8464] hover:underline"
+                                            >
+                                                Ver todo
+                                            </a>
+                                        </div>
 
-                                            <span
-                                                v-if="secondLevelCategory.children && secondLevelCategory.children.length"
-                                                class="icon-arrow-right text-xs text-[#9e8464] rtl:icon-arrow-left"
-                                            ></span>
+                                        <!-- Level 2 Subcategories -->
+                                        <div v-if="category.children && category.children.length" class="border-t border-[#ede8dc]/50 pt-1 mt-1 space-y-0.5">
+                                            <div
+                                                v-for="subCategory in category.children"
+                                                :key="subCategory.id"
+                                                class="group flex cursor-pointer items-center justify-between rounded-lg px-2.5 py-1.5 text-xs font-medium text-[#52525b] transition-colors hover:bg-[#f7f4ee] hover:text-[#18181b]"
+                                                @click="showThirdLevel(subCategory, category, $event)"
+                                            >
+                                                <a :href="subCategory.url" class="flex-1">
+                                                    @{{ subCategory.name }}
+                                                </a>
+
+                                                <span
+                                                    v-if="subCategory.children && subCategory.children.length"
+                                                    class="icon-arrow-right text-xs text-[#9e8464] transition-transform group-hover:translate-x-0.5"
+                                                ></span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
 
-                            <!-- Third Level View -->
-                            <div class="h-[calc(100vh-100px)] w-full shrink-0 overflow-y-auto px-4 py-2" v-if="currentViewLevel === 'third'">
-                                <div class="mb-4 border-b border-[#ede8dc] pb-3">
-                                    <button
-                                        type="button"
-                                        @click="goBackToMainView"
-                                        class="flex items-center gap-2 text-xs font-semibold text-[#9e8464] hover:text-[#18181b] transition-colors"
-                                    >
-                                        <span class="icon-arrow-left text-sm rtl:icon-arrow-right"></span>
-                                        <span>@lang('shop::app.components.layouts.header.desktop.bottom.back-button')</span>
-                                    </button>
-                                    <p class="mt-2 font-serif text-lg font-medium text-[#18181b]">
-                                        @{{ currentSecondLevelCategory?.name }}
-                                    </p>
-                                </div>
+                                <!-- Drilldown View (Level 3) -->
+                                <div class="h-full w-full shrink-0 overflow-y-auto px-5 py-4" v-if="currentViewLevel === 'third'">
+                                    <div class="mb-4 border-b border-[#ede8dc] pb-3">
+                                        <button
+                                            type="button"
+                                            @click="goBackToMainView"
+                                            class="flex cursor-pointer items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[#9e8464] hover:text-[#18181b] transition-colors"
+                                        >
+                                            <span class="icon-arrow-left text-sm"></span>
+                                            <span>@lang('shop::app.components.layouts.header.desktop.bottom.back-button')</span>
+                                        </button>
+                                        <h3 class="mt-3 font-editorial text-xl font-bold text-[#18181b]">
+                                            @{{ currentSecondLevelCategory?.name }}
+                                        </h3>
+                                        <a
+                                            :href="currentSecondLevelCategory?.url"
+                                            class="inline-block mt-1 text-xs font-medium text-[#9e8464] hover:underline"
+                                        >
+                                            Ver toda la categoría &rarr;
+                                        </a>
+                                    </div>
 
-                                <div class="grid gap-1">
-                                    <a
-                                        v-for="thirdLevelCategory in currentSecondLevelCategory?.children"
-                                        :key="thirdLevelCategory.id"
-                                        :href="thirdLevelCategory.url"
-                                        class="block rounded-md px-3 py-2 text-xs font-medium text-[#62503d] transition-colors hover:bg-[#ede8dc]/50 hover:text-[#18181b]"
-                                    >
-                                        @{{ thirdLevelCategory.name }}
-                                    </a>
+                                    <div class="space-y-1">
+                                        <a
+                                            v-for="thirdLevelCategory in currentSecondLevelCategory?.children"
+                                            :key="thirdLevelCategory.id"
+                                            :href="thirdLevelCategory.url"
+                                            class="block rounded-lg px-3 py-2 text-xs font-medium text-[#52525b] transition-colors hover:bg-[#f7f4ee] hover:text-[#18181b]"
+                                        >
+                                            @{{ thirdLevelCategory.name }}
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </x-slot>
-            </x-shop::drawer>
+                    </aside>
+                </transition>
+            </teleport>
         </div>
     </script>
 
@@ -404,10 +476,19 @@
         app.component('v-desktop-category', {
             template: '#v-desktop-category-template',
 
+            props: {
+                initialCategories: {
+                    type: Array,
+                    default: () => []
+                }
+            },
+
             data() {
+                const hasInitial = Array.isArray(this.initialCategories) && this.initialCategories.length > 0;
+
                 return {
-                    isLoading: true,
-                    categories: [],
+                    isLoading: ! hasInitial,
+                    categories: hasInitial ? this.initialCategories : [],
                     isDrawerActive: false,
                     currentViewLevel: 'main',
                     currentSecondLevelCategory: null,
@@ -416,7 +497,12 @@
             },
 
             mounted() {
-                this.initCategories();
+                if (! this.categories || ! this.categories.length) {
+                    this.initCategories();
+                } else {
+                    this.$nextTick(this.positionMegaMenus);
+                }
+
                 window.addEventListener('resize', this.positionMegaMenus);
             },
 
@@ -425,12 +511,34 @@
             },
 
             methods: {
+                formatCategory(cat) {
+                    if (!cat) return null;
+                    let name = cat.name;
+                    if (!name && Array.isArray(cat.translations) && cat.translations.length) {
+                        const match = cat.translations.find(t => t.name) || cat.translations[0];
+                        if (match && match.name) name = match.name;
+                    }
+                    if (!name && cat.slug) {
+                        name = cat.slug.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                    }
+                    if (!name) name = 'Categoría ' + (cat.id || '');
+
+                    const url = cat.url || (cat.slug ? `/categories/${cat.slug}` : '#');
+
+                    return {
+                        ...cat,
+                        name,
+                        url,
+                        children: Array.isArray(cat.children) ? cat.children.map(c => this.formatCategory(c)).filter(Boolean) : []
+                    };
+                },
+
                 initCategories() {
                     try {
-                        const stored = localStorage.getItem('categories');
+                        const stored = localStorage.getItem('beauty_categories_v2');
                         if (stored) {
                             const parsed = JSON.parse(stored);
-                            if (Array.isArray(parsed) && parsed.length > 0) {
+                            if (Array.isArray(parsed) && parsed.length > 0 && parsed[0].name) {
                                 this.categories = parsed;
                                 this.isLoading = false;
                                 this.$nextTick(this.positionMegaMenus);
@@ -447,8 +555,11 @@
                         .then(response => {
                             this.isLoading = false;
                             if (response.data && Array.isArray(response.data.data) && response.data.data.length > 0) {
-                                this.categories = response.data.data;
-                                localStorage.setItem('categories', JSON.stringify(this.categories));
+                                this.categories = response.data.data.map(c => this.formatCategory(c)).filter(Boolean);
+                                try {
+                                    localStorage.setItem('beauty_categories_v2', JSON.stringify(this.categories));
+                                    localStorage.removeItem('categories');
+                                } catch (e) {}
                             }
                             this.$nextTick(this.positionMegaMenus);
                         })
@@ -474,14 +585,6 @@
                     if (this.isDrawerActive) {
                         this.currentViewLevel = 'main';
                     }
-                },
-
-                onDrawerToggle(event) {
-                    this.isDrawerActive = event.isActive;
-                },
-
-                onDrawerClose() {
-                    this.isDrawerActive = false;
                 },
 
                 showThirdLevel(secondLevelCategory, parentCategory, event) {
