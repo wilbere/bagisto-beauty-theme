@@ -77,15 +77,16 @@
                     <!-- Slide-over Drawer -->
                     <transition
                         enter-active-class="transition-transform ease-out duration-300"
-                        enter-from-class="ltr:translate-x-full rtl:-translate-x-full"
+                        enter-from-class="translate-x-full rtl:-translate-x-full"
                         enter-to-class="translate-x-0"
                         leave-active-class="transition-transform ease-in duration-200"
                         leave-from-class="translate-x-0"
-                        leave-to-class="ltr:translate-x-full rtl:-translate-x-full"
+                        leave-to-class="translate-x-full rtl:-translate-x-full"
                     >
                         <aside
                             v-if="isOpen"
-                            class="fixed inset-y-0 ltr:right-0 rtl:left-0 z-[1000] flex w-full max-w-[440px] flex-col border-l border-[#ede8dc] bg-[#fdfbf7] shadow-2xl"
+                            class="fixed inset-y-0 top-0 bottom-0 right-0 rtl:left-0 rtl:right-auto z-[1000] flex h-screen max-h-screen w-full max-w-[440px] flex-col border-l border-[#ede8dc] bg-[#fdfbf7] shadow-2xl"
+                            style="top: 0; bottom: 0; right: 0; height: 100vh; max-height: 100vh;"
                             role="dialog"
                             aria-modal="true"
                             aria-label="@lang('beauty::app.cart.title')"
@@ -94,19 +95,19 @@
 
                             <!-- Header -->
                             <div class="flex flex-col border-b border-[#ede8dc] bg-[#fdfbf7] px-6 py-5">
-                                <div class="flex items-center justify-between">
-                                    <div class="flex items-baseline gap-2">
-                                        <h2 class="font-editorial text-2xl font-semibold tracking-tight text-[#18181b]">
+                                <div class="flex items-center justify-between gap-4">
+                                    <div class="flex items-baseline gap-2 min-w-0 flex-1">
+                                        <h2 class="font-editorial text-2xl font-semibold tracking-tight text-[#18181b] truncate">
                                             @lang('beauty::app.cart.title')
                                         </h2>
-                                        <span class="text-xs font-medium text-[#71717a]" v-if="cart?.items?.length">
+                                        <span class="text-xs font-medium text-[#71717a] shrink-0" v-if="cart?.items?.length">
                                             (@{{ cart.items.length }})
                                         </span>
                                     </div>
 
                                     <button
                                         type="button"
-                                        class="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full text-[#71717a] transition-colors hover:bg-[#ede8dc]/60 hover:text-[#18181b]"
+                                        class="flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-full text-[#71717a] transition-colors hover:bg-[#ede8dc]/60 hover:text-[#18181b]"
                                         @click="closeDrawer"
                                         aria-label="Cerrar carrito"
                                     >
