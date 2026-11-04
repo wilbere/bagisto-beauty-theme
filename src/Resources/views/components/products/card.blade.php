@@ -125,15 +125,18 @@
                         <div class="mt-3">
                             <button
                                 type="button"
-                                class="flex w-full cursor-pointer items-center justify-center gap-2 rounded-full border border-[#18181b] bg-transparent py-2 px-3 text-[11px] font-semibold uppercase tracking-widest text-[#18181b] transition-all duration-300 hover:bg-[#18181b] hover:text-white active:scale-98 disabled:cursor-not-allowed disabled:opacity-40"
+                                class="flex h-9 w-full cursor-pointer items-center justify-center gap-2 rounded-full border border-[#18181b] bg-transparent px-3 text-xs font-semibold uppercase tracking-wider text-[#18181b] transition-all duration-200 hover:bg-[#18181b] hover:text-white active:scale-98 disabled:cursor-not-allowed disabled:opacity-40"
                                 :disabled="!product.is_saleable || isAddingToCart"
                                 @click="addToCart()"
                             >
-                                <span v-if="isAddingToCart" class="flex items-center gap-1.5">
+                                <span v-if="isAddingToCart" class="flex items-center gap-1.5 whitespace-nowrap">
                                     <span class="inline-block h-2.5 w-2.5 animate-spin rounded-full border-2 border-current border-t-transparent"></span>
                                     <span>Agregando...</span>
                                 </span>
-                                <span v-else>@lang('shop::app.components.products.card.add-to-cart')</span>
+                                <span v-else class="flex items-center gap-1.5 whitespace-nowrap">
+                                    <span class="icon-cart text-xs"></span>
+                                    <span>@lang('shop::app.components.products.card.add-to-cart')</span>
+                                </span>
                             </button>
                         </div>
                     @endif
@@ -174,11 +177,12 @@
                 <div class="flex items-center gap-3 pt-3">
                     <button
                         type="button"
-                        class="cursor-pointer rounded-full border border-[#18181b] bg-transparent px-6 py-2 text-xs font-semibold uppercase tracking-widest text-[#18181b] transition-colors hover:bg-[#18181b] hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
+                        class="flex h-9 cursor-pointer items-center justify-center gap-2 rounded-full border border-[#18181b] bg-transparent px-5 text-xs font-semibold uppercase tracking-wider text-[#18181b] whitespace-nowrap transition-colors hover:bg-[#18181b] hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
                         :disabled="!product.is_saleable || isAddingToCart"
                         @click="addToCart()"
                     >
-                        @lang('shop::app.components.products.card.add-to-cart')
+                        <span class="icon-cart text-xs"></span>
+                        <span>@lang('shop::app.components.products.card.add-to-cart')</span>
                     </button>
                 </div>
             </div>

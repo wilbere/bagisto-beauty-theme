@@ -1,7 +1,7 @@
 {!! view_render_event('bagisto.shop.categories.view.filters.before') !!}
 
 <!-- Desktop Filters Navigation -->
-<div v-if="! isMobile" class="w-full">
+<div v-if="! isMobile" class="w-64 shrink-0 max-lg:hidden">
     <!-- Filters Vue Component -->
     <v-filters
         @filter-applied="setFilters('filter', $event)"
@@ -113,7 +113,7 @@
 
         <!-- Filters Container -->
         <template v-else>
-            <div class="w-full">
+            <div class="w-full lg:w-64 lg:shrink-0">
                 <!-- Filters Header Container -->
                 <div class="flex items-center justify-between border-b border-[#ede8dc] pb-3.5 mb-2 max-lg:hidden">
                     <h3 class="font-editorial text-lg font-bold tracking-tight text-[#18181b]">

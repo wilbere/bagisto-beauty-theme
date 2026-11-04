@@ -86,7 +86,7 @@
                     </div>
 
                     <!-- Products Section -->
-                    <div class="flex-1">
+                    <div class="flex-1 min-w-0">
                         <!-- Toolbar (Sorting & Count) -->
                         <div class="mb-6 flex items-center justify-between border-b border-[#eae5db]/60 pb-4">
                             @include('shop::categories.toolbar')
