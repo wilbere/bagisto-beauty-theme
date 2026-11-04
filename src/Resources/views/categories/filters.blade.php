@@ -1,7 +1,7 @@
 {!! view_render_event('bagisto.shop.categories.view.filters.before') !!}
 
 <!-- Desktop Filters Navigation -->
-<div v-if="! isMobile" class="w-64 shrink-0 max-lg:hidden">
+<div class="w-64 shrink-0 max-lg:hidden">
     <!-- Filters Vue Component -->
     <v-filters
         @filter-applied="setFilters('filter', $event)"
@@ -14,8 +14,7 @@
 
 <!-- Mobile Filters Navigation -->
 <div
-    class="fixed bottom-0 z-30 grid w-full max-w-full grid-cols-[1fr_auto_1fr] items-center justify-items-center border-t border-[#ede8dc] bg-[#fdfbf7]/95 px-5 backdrop-blur-md lg:hidden ltr:left-0 rtl:right-0"
-    v-if="isMobile"
+    class="fixed bottom-0 inset-x-0 z-30 grid grid-cols-[1fr_auto_1fr] items-center justify-items-center border-t border-[#ede8dc] bg-[#fdfbf7]/95 px-5 py-2 shadow-lg backdrop-blur-md lg:hidden"
 >
     <!-- Filter Drawer -->
     <x-shop::drawer

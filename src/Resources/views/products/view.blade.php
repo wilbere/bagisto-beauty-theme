@@ -162,7 +162,7 @@
 
                             <!-- Price Display -->
                             <div class="mt-4 flex items-baseline gap-3">
-                                <div class="text-2xl font-bold text-[#18181b]">
+                                <div class="text-2xl sm:text-3xl font-bold tracking-tight text-[#18181b]">
                                     {!! $product->getTypeInstance()->getPriceHtml() !!}
                                 </div>
 
@@ -170,6 +170,17 @@
                                     <span class="text-xs text-[#71717a]">
                                         (@lang('shop::app.products.view.tax-inclusive'))
                                     </span>
+                                @endif
+                            </div>
+
+                            <!-- Stock Status Indicator -->
+                            <div class="mt-3 flex items-center gap-2">
+                                @if ($product->isSaleable(1))
+                                    <span class="inline-flex h-2 w-2 rounded-full bg-emerald-500"></span>
+                                    <span class="text-xs font-medium text-emerald-700">En stock listo para despacho</span>
+                                @else
+                                    <span class="inline-flex h-2 w-2 rounded-full bg-rose-500"></span>
+                                    <span class="text-xs font-medium text-rose-700">Agotado temporalmente</span>
                                 @endif
                             </div>
 
@@ -197,14 +208,13 @@
                                     <x-shop::quantity-changer
                                         name="quantity"
                                         :value="1"
-                                        class="rounded-full border border-[#eae5db] px-2 py-1"
                                     />
 
                                     <!-- Add to Cart Primary Button -->
                                     <button
                                         type="submit"
                                         id="pdp-primary-add-to-cart"
-                                        class="flex-1 rounded-full bg-[#18181b] py-3.5 text-xs font-semibold uppercase tracking-wider text-white shadow-xs transition-colors hover:bg-[#d4a373] disabled:cursor-not-allowed disabled:opacity-50"
+                                        class="flex-1 rounded-full bg-[#18181b] py-3.5 px-6 text-xs font-semibold uppercase tracking-widest text-white shadow-xs transition-all hover:bg-[#9e8464] active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-50"
                                         :disabled="!{{ $product->isSaleable(1) ? 'true' : 'false' }} || isStoring.addToCart"
                                         @click="is_buy_now = 0"
                                     >
@@ -216,8 +226,8 @@
                                     @if (core()->getConfigData('customer.settings.wishlist.wishlist_option'))
                                         <button
                                             type="button"
-                                            class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[#eae5db] bg-white text-lg text-[#18181b] transition-colors hover:text-red-500"
-                                            :class="isWishlist ? 'text-red-500' : ''"
+                                            class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[#ede8dc] bg-[#fdfbf7] text-lg text-[#18181b] transition-all hover:border-[#9e8464] hover:text-[#9e8464]"
+                                            :class="isWishlist ? 'text-red-500 border-red-200 bg-red-50/50' : ''"
                                             @click="addToWishlist"
                                             aria-label="@lang('shop::app.products.view.add-to-wishlist')"
                                         >
@@ -230,7 +240,7 @@
                                 @if (core()->getConfigData('catalog.products.product_view_page.buy_now_button_display'))
                                     <button
                                         type="submit"
-                                        class="w-full rounded-full border border-[#18181b] bg-white py-3 text-xs font-semibold uppercase tracking-wider text-[#18181b] transition-colors hover:bg-[#18181b] hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
+                                        class="w-full rounded-full border border-[#18181b] bg-white py-3 text-xs font-semibold uppercase tracking-widest text-[#18181b] transition-all hover:bg-[#18181b] hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
                                         :disabled="!{{ $product->isSaleable(1) ? 'true' : 'false' }} || isStoring.buyNow"
                                         @click="is_buy_now = 1"
                                     >
@@ -241,31 +251,23 @@
                             </div>
 
                             <!-- Trust Badges List -->
-                            <div class="mt-8 border-t border-[#eae5db]/60 pt-6">
-                                <div class="grid grid-cols-2 gap-3 text-xs text-[#52525b]">
-                                    <div class="flex items-center gap-2">
-                                        <svg class="h-4 w-4 text-[#d4a373]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                                        </svg>
-                                        <span>@lang('beauty::app.services.pro-grade')</span>
+                            <div class="mt-8 border-t border-[#ede8dc] pt-6">
+                                <div class="grid grid-cols-2 gap-3.5 text-xs text-[#52525b]">
+                                    <div class="flex items-center gap-2.5">
+                                        <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#ede8dc]/60 text-xs font-bold text-[#9e8464]">✓</span>
+                                        <span class="font-medium text-[#18181b]">@lang('beauty::app.services.pro-grade')</span>
                                     </div>
-                                    <div class="flex items-center gap-2">
-                                        <svg class="h-4 w-4 text-[#d4a373]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                                        </svg>
-                                        <span>@lang('beauty::app.services.cruelty-free')</span>
+                                    <div class="flex items-center gap-2.5">
+                                        <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#ede8dc]/60 text-xs font-bold text-[#9e8464]">✓</span>
+                                        <span class="font-medium text-[#18181b]">@lang('beauty::app.services.cruelty-free')</span>
                                     </div>
-                                    <div class="flex items-center gap-2">
-                                        <svg class="h-4 w-4 text-[#d4a373]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                                        </svg>
-                                        <span>@lang('beauty::app.services.safe-packaging')</span>
+                                    <div class="flex items-center gap-2.5">
+                                        <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#ede8dc]/60 text-xs font-bold text-[#9e8464]">✓</span>
+                                        <span class="font-medium text-[#18181b]">@lang('beauty::app.services.safe-packaging')</span>
                                     </div>
-                                    <div class="flex items-center gap-2">
-                                        <svg class="h-4 w-4 text-[#d4a373]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                                        </svg>
-                                        <span>@lang('beauty::app.services.support')</span>
+                                    <div class="flex items-center gap-2.5">
+                                        <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#ede8dc]/60 text-xs font-bold text-[#9e8464]">✓</span>
+                                        <span class="font-medium text-[#18181b]">@lang('beauty::app.services.support')</span>
                                     </div>
                                 </div>
                             </div>
@@ -275,7 +277,7 @@
                     <!-- Sticky Mobile Buy Bar -->
                     <div
                         id="pdp-sticky-mobile-bar"
-                        class="fixed bottom-0 inset-x-0 z-40 border-t border-[#eae5db] bg-white/95 px-4 py-3 shadow-lg backdrop-blur-md transition-all duration-300 translate-y-full opacity-0 pointer-events-none lg:hidden"
+                        class="fixed bottom-0 inset-x-0 z-40 border-t border-[#ede8dc] bg-[#fdfbf7]/95 px-4 py-3 shadow-xl backdrop-blur-md transition-all duration-300 translate-y-full opacity-0 pointer-events-none lg:hidden"
                     >
                         <div class="flex items-center justify-between gap-4">
                             <div class="min-w-0 flex-1">
@@ -318,9 +320,27 @@
 
                 mounted() {
                     this.checkWishlistStatus();
+                    this.initStickyMobileBar();
                 },
 
                 methods: {
+                    initStickyMobileBar() {
+                        const primaryBtn = document.getElementById('pdp-primary-add-to-cart');
+                        const stickyBar = document.getElementById('pdp-sticky-mobile-bar');
+                        if (! primaryBtn || ! stickyBar) return;
+
+                        const observer = new IntersectionObserver(([entry]) => {
+                            if (! entry.isIntersecting) {
+                                stickyBar.classList.remove('translate-y-full', 'opacity-0', 'pointer-events-none');
+                                stickyBar.classList.add('translate-y-0', 'opacity-100', 'pointer-events-auto');
+                            } else {
+                                stickyBar.classList.add('translate-y-full', 'opacity-0', 'pointer-events-none');
+                                stickyBar.classList.remove('translate-y-0', 'opacity-100', 'pointer-events-auto');
+                            }
+                        }, { threshold: 0.1 });
+
+                        observer.observe(primaryBtn);
+                    },
                     checkWishlistStatus() {
                         if (this.isCustomer) {
                             this.$axios.get('{{ route('shop.api.customers.account.wishlist.index') }}')

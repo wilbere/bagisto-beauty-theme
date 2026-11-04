@@ -80,10 +80,8 @@
         >
             <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
                 <div class="flex items-start gap-8 lg:gap-10">
-                    <!-- Filters Sidebar (Desktop) -->
-                    <div class="w-64 shrink-0 max-lg:hidden">
-                        @include('shop::categories.filters')
-                    </div>
+                    <!-- Filters (Desktop Sidebar + Mobile Bottom Drawer) -->
+                    @include('shop::categories.filters')
 
                     <!-- Products Section -->
                     <div class="flex-1 min-w-0">
@@ -130,10 +128,12 @@
                                     <div class="mt-12 flex justify-center" v-if="links?.next">
                                         <button
                                             type="button"
-                                            class="rounded-full border border-[#18181b] bg-white px-8 py-3 text-xs font-semibold uppercase tracking-wider text-[#18181b] transition-all hover:bg-[#18181b] hover:text-white"
-                                            @click="loadMore"
+                                            class="inline-flex items-center gap-2 rounded-full border border-[#18181b] bg-white px-8 py-3 text-xs font-semibold uppercase tracking-wider text-[#18181b] transition-all hover:bg-[#18181b] hover:text-white disabled:opacity-50"
+                                            @click="loadMoreProducts"
+                                            :disabled="loader"
                                         >
-                                            @lang('beauty::app.products.load-more')
+                                            <span v-if="loader">...</span>
+                                            <span v-else>@lang('beauty::app.products.load-more')</span>
                                         </button>
                                     </div>
                                 </template>
@@ -176,26 +176,38 @@
                 data() {
                     return {
                         isLoading: true,
-                        isMobile: window.innerWidth <= 768,
+                        isDrawerActive: {
+                            toolbar: false,
+                            filter: false,
+                        },
                         filters: {
                             toolbar: { default: { mode: 'grid' }, applied: {} },
                             filter: {},
                         },
                         products: [],
                         links: {},
+                        loader: false,
                     };
                 },
 
                 computed: {
                     queryParams() {
                         let queryParams = Object.assign({}, this.filters.filter, this.filters.toolbar.applied);
-                        return this.cleanObject(queryParams);
+                        return this.removeJsonEmptyValues(queryParams);
+                    },
+
+                    queryString() {
+                        return this.jsonToQueryString(this.queryParams);
                     },
                 },
 
                 watch: {
                     queryParams() {
                         this.getProducts();
+                    },
+
+                    queryString() {
+                        window.history.pushState({}, '', '?' + this.queryString);
                     },
                 },
 
@@ -205,6 +217,11 @@
 
                 methods: {
                     getProducts() {
+                        this.isDrawerActive = {
+                            toolbar: false,
+                            filter: false,
+                        };
+
                         this.isLoading = true;
 
                         this.$axios.get("{{ route('shop.api.products.index', ['category_id' => $category->id]) }}", {
@@ -215,8 +232,28 @@
                             this.products = response.data.data;
                             this.links = response.data.links;
                         })
-                        .catch(() => {
+                        .catch((error) => {
+                            console.error("Error al cargar productos:", error);
                             this.isLoading = false;
+                        });
+                    },
+
+                    loadMoreProducts() {
+                        if (! this.links.next) {
+                            return;
+                        }
+
+                        this.loader = true;
+
+                        this.$axios.get(this.links.next)
+                        .then((response) => {
+                            this.loader = false;
+                            this.products = [...this.products, ...response.data.data];
+                            this.links = response.data.links;
+                        })
+                        .catch((error) => {
+                            console.error("Error al cargar más productos:", error);
+                            this.loader = false;
                         });
                     },
 
@@ -232,8 +269,22 @@
                         }
                     },
 
-                    cleanObject(obj) {
-                        return Object.entries(obj).reduce((a, [k, v]) => (v ? ((a[k] = v), a) : a), {});
+                    removeJsonEmptyValues(params) {
+                        let clean = {};
+                        Object.keys(params).forEach(function (key) {
+                            if (params[key] !== null && params[key] !== undefined && params[key] !== '') {
+                                clean[key] = Array.isArray(params[key]) ? params[key].join(',') : params[key];
+                            }
+                        });
+                        return clean;
+                    },
+
+                    jsonToQueryString(params) {
+                        let parameters = new URLSearchParams();
+                        for (const key in params) {
+                            parameters.append(key, params[key]);
+                        }
+                        return parameters.toString();
                     },
                 },
             });
