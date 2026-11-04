@@ -223,7 +223,9 @@
 
                         if (response.data.data) {
                             this.$emitter.emit('update-mini-cart', response.data.data);
-                            window.beautyEmitter.emit('cart:updated', response.data.data);
+                            window.beautyEmitter?.emit('cart:updated', response.data.data);
+                            window.beautyEmitter?.emit('cart:open');
+                            this.$emitter.emit('cart:open');
 
                             this.$emitter.emit('add-flash', {
                                 type: 'success',

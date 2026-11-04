@@ -201,7 +201,7 @@ export function initSwatchInteractions() {
 export function initMiniCartProgress() {
     window.beautyEmitter.on("cart:updated", (cart) => {
         const threshold = 50.0;
-        const subtotal = parseFloat(cart?.subtotal || 0);
+        const subtotal = parseFloat(cart?.sub_total || cart?.subtotal || 0);
         const progressBar = document.getElementById("free-shipping-progress");
         const remainingLabel = document.getElementById("free-shipping-remaining");
 
