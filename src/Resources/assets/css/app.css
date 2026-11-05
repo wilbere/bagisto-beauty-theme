@@ -165,3 +165,28 @@
     -webkit-backdrop-filter: blur(12px);
   }
 }
+
+/* Directional utilities and Form Control compatibility (Unpurged) */
+[dir="ltr"] .ltr\:right-0,
+html[dir="ltr"] .ltr\:right-0 {
+  right: 0px !important;
+  left: auto !important;
+}
+
+[dir="rtl"] .rtl\:left-0,
+html[dir="rtl"] .rtl\:left-0 {
+  left: 0px !important;
+  right: auto !important;
+}
+
+[dir="ltr"] .ltr\:pr-12\!,
+html[dir="ltr"] .ltr\:pr-12\! {
+  padding-right: 3rem !important;
+}
+
+[dir="rtl"] .rtl\:pl-12\!,
+html[dir="rtl"] .rtl\:pl-12\! {
+  padding-left: 3rem !important;
+}
+
+
