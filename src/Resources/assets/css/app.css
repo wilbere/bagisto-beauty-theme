@@ -27,6 +27,10 @@
   --color-accent-gold: #c5a880;
   --color-accent-sage: #8a9a86;
 
+  /* Compatibility aliases for Bagisto packages */
+  --color-navyBlue: #18181b;
+  --color-blue-900: #27272a;
+
   /* Bagisto Shop Icons */
   --icon-uncheck:                "\e941";
   --icon-check-box:              "\e90f";
