@@ -60,4 +60,8 @@ return [
         'hero-description'       => 'Fórmulas profesionales de alto brillo, secado rápido y pigmentación pura diseñadas para manicuristas exigentes y amantes del nail art.',
         'explore-cta'            => 'Explorar Esmaltes & Geles',
     ],
+
+    'checkout' => [
+        'items'                  => 'artículo(s)',
+    ],
 ];

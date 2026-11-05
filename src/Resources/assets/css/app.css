@@ -189,4 +189,57 @@ html[dir="rtl"] .rtl\:pl-12\! {
   padding-left: 3rem !important;
 }
 
+/* Bagisto Button Fallbacks for Legacy Core Views */
+.primary-button {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  border-radius: 9999px !important;
+  background-color: #18181b !important;
+  color: #ffffff !important;
+  padding: 0.75rem 2.25rem !important;
+  font-size: 0.75rem !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
+  transition: all 0.2s ease !important;
+}
+
+.primary-button:hover {
+  background-color: #9e8464 !important;
+  color: #ffffff !important;
+}
+
+.primary-button:disabled {
+  opacity: 0.5 !important;
+  cursor: not-allowed !important;
+}
+
+.secondary-button {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  border-radius: 9999px !important;
+  background-color: #ffffff !important;
+  border: 1px solid #ede8dc !important;
+  color: #18181b !important;
+  padding: 0.75rem 2.25rem !important;
+  font-size: 0.75rem !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
+  transition: all 0.2s ease !important;
+}
+
+.secondary-button:hover {
+  background-color: #fdfbf7 !important;
+  border-color: #9e8464 !important;
+  color: #9e8464 !important;
+}
+
+
 

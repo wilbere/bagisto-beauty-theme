@@ -60,4 +60,8 @@ return [
         'hero-description'       => 'Professional high-shine, fast-curing, pure-pigment formulas designed for demanding nail artists.',
         'explore-cta'            => 'Explore Polishes & Gels',
     ],
+
+    'checkout' => [
+        'items'                  => 'item(s)',
+    ],
 ];
