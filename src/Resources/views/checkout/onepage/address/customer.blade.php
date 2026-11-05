@@ -47,6 +47,7 @@
                                 class="relative cursor-pointer select-none rounded-2xl border p-5 transition-all"
                                 :class="selectedAddresses.billing_address_id == address.id ? 'border-[#18181b] bg-[#fdfbf7] shadow-xs ring-1 ring-[#18181b]' : 'border-[#ede8dc] bg-white hover:border-[#9e8464]'"
                                 v-for="address in customerSavedAddresses.billing"
+                                @click="selectedAddresses.billing_address_id = address.id"
                             >
                                 <!-- Actions -->
                                 <div class="absolute top-4 flex items-center gap-3 ltr:right-4 rtl:left-4">
@@ -62,7 +63,7 @@
                                     <!-- Edit Icon -->
                                     <span
                                         class="icon-edit cursor-pointer text-lg text-[#71717a] transition-colors hover:text-[#9e8464]"
-                                        @click="
+                                        @click.stop="
                                             selectedAddressForEdit = address;
                                             activeAddressForm = 'billing';
                                             saveAddress = address.address_type == 'customer'
@@ -95,7 +96,6 @@
                             <div
                                 class="flex min-h-[120px] cursor-pointer items-center justify-center rounded-2xl border border-dashed border-[#ded5c3] p-5 transition-all hover:border-[#9e8464] hover:bg-[#fdfbf7]"
                                 @click="activeAddressForm = 'billing'"
-                                v-if="! cart.billing_address"
                             >
                                 <div class="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[#9e8464]">
                                     <span class="icon-plus text-base"></span>
@@ -146,6 +146,7 @@
                                         class="relative cursor-pointer select-none rounded-2xl border p-5 transition-all"
                                         :class="selectedAddresses.shipping_address_id == address.id ? 'border-[#18181b] bg-[#fdfbf7] shadow-xs ring-1 ring-[#18181b]' : 'border-[#ede8dc] bg-white hover:border-[#9e8464]'"
                                         v-for="address in customerSavedAddresses.shipping"
+                                        @click="selectedAddresses.shipping_address_id = address.id"
                                     >
                                         <div class="absolute top-4 flex items-center gap-3 ltr:right-4 rtl:left-4">
                                             <input
@@ -159,7 +160,7 @@
 
                                             <span
                                                 class="icon-edit cursor-pointer text-lg text-[#71717a] transition-colors hover:text-[#9e8464]"
-                                                @click="
+                                                @click.stop="
                                                     selectedAddressForEdit = address;
                                                     activeAddressForm = 'shipping';
                                                     saveAddress = address.address_type == 'customer'
@@ -191,7 +192,6 @@
                                     <div
                                         class="flex min-h-[120px] cursor-pointer items-center justify-center rounded-2xl border border-dashed border-[#ded5c3] p-5 transition-all hover:border-[#9e8464] hover:bg-[#fdfbf7]"
                                         @click="selectedAddressForEdit = null; activeAddressForm = 'shipping'"
-                                        v-if="! cart.shipping_address"
                                     >
                                         <div class="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[#9e8464]">
                                             <span class="icon-plus text-base"></span>
