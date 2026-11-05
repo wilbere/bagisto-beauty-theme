@@ -51,14 +51,24 @@
                             >
                                 <!-- Actions -->
                                 <div class="absolute top-4 flex items-center gap-3 ltr:right-4 rtl:left-4">
-                                    <input
+                                    <v-field
                                         type="radio"
                                         name="billing.id"
-                                        :id="`billing_address_id_${address.id}`"
-                                        :value="address.id"
                                         v-model="selectedAddresses.billing_address_id"
-                                        class="h-4 w-4 border-[#ede8dc] text-[#18181b] focus:ring-[#9e8464]"
+                                        :value="address.id"
+                                        rules="required"
+                                        label="@lang('shop::app.checkout.onepage.address.billing-address')"
+                                        v-slot="{ field }"
                                     >
+                                        <input
+                                            type="radio"
+                                            name="billing.id"
+                                            :id="`billing_address_id_${address.id}`"
+                                            :value="address.id"
+                                            v-bind="field"
+                                            class="h-4 w-4 border-[#ede8dc] text-[#18181b] accent-[#18181b] focus:ring-[#9e8464]"
+                                        >
+                                    </v-field>
 
                                     <!-- Edit Icon -->
                                     <span
@@ -149,14 +159,24 @@
                                         @click="selectedAddresses.shipping_address_id = address.id"
                                     >
                                         <div class="absolute top-4 flex items-center gap-3 ltr:right-4 rtl:left-4">
-                                            <input
+                                            <v-field
                                                 type="radio"
                                                 name="shipping.id"
-                                                :id="`shipping_address_id_${address.id}`"
-                                                :value="address.id"
                                                 v-model="selectedAddresses.shipping_address_id"
-                                                class="h-4 w-4 border-[#ede8dc] text-[#18181b] focus:ring-[#9e8464]"
+                                                :value="address.id"
+                                                rules="required"
+                                                label="@lang('shop::app.checkout.onepage.address.shipping-address')"
+                                                v-slot="{ field }"
                                             >
+                                                <input
+                                                    type="radio"
+                                                    name="shipping.id"
+                                                    :id="`shipping_address_id_${address.id}`"
+                                                    :value="address.id"
+                                                    v-bind="field"
+                                                    class="h-4 w-4 border-[#ede8dc] text-[#18181b] accent-[#18181b] focus:ring-[#9e8464]"
+                                                >
+                                            </v-field>
 
                                             <span
                                                 class="icon-edit cursor-pointer text-lg text-[#71717a] transition-colors hover:text-[#9e8464]"
@@ -377,6 +397,7 @@
                     this.$axios.get('{{ route('shop.api.customers.account.addresses.index') }}')
                         .then(response => {
                             this.initializeAddresses('billing', structuredClone(response.data.data));
+
                             this.initializeAddresses('shipping', structuredClone(response.data.data));
 
                             if (! this.customerSavedAddresses.billing.length) {
@@ -387,6 +408,7 @@
                         })
                         .catch((error) => {
                             console.error(error);
+                            this.isLoading = false;
                         });
                 },
 
@@ -396,47 +418,174 @@
                     let cartAddress = this.cart[type + '_address'];
 
                     if (! cartAddress) {
+                        let defaultAddress = addresses.find(address => address.default_address);
+
+                        if (defaultAddress) {
+                            this.selectedAddresses[type + '_address_id'] = defaultAddress.id;
+                        } else if (addresses.length) {
+                            this.selectedAddresses[type + '_address_id'] = addresses[0].id;
+                        }
+
+                        return addresses;
+                    }
+
+                    if (cartAddress.parent_address_id) {
                         addresses.forEach(address => {
-                            if (address.default_address) {
+                            if (address.id == cartAddress.parent_address_id) {
                                 this.selectedAddresses[type + '_address_id'] = address.id;
                             }
                         });
+                    } else {
+                        this.selectedAddresses[type + '_address_id'] = cartAddress.id;
+
+                        addresses.unshift(cartAddress);
+                    }
+
+                    return addresses;
+                },
+
+                updateOrCreateAddress(params, { setErrors }) {
+                    this.handleAddressChange();
+
+                    params = params[this.activeAddressForm];
+
+                    let address = this.customerSavedAddresses[this.activeAddressForm].find(address => {
+                        return address.id == params.id;
+                    });
+
+                    if (! address) {
+                        if (params.save_address) {
+                            this.createCustomerAddress(params, { setErrors })
+                                .then((response) => {
+                                    this.addAddressToList(response.data.data);
+                                })
+                                .catch((error) => {});
+                        } else {
+                            this.addAddressToList(params);
+                        }
+
                         return;
                     }
 
-                    if (cartAddress.address_type == 'customer') {
-                        this.selectedAddresses[type + '_address_id'] = cartAddress.id;
+                    if (params.save_address) {
+                        if (address.address_type == 'customer') {
+                            this.updateCustomerAddress(params.id, params, { setErrors })
+                                .then((response) => {
+                                    this.updateAddressInList(response.data.data);
+                                })
+                                .catch((error) => {});
+                        } else {
+                            this.removeAddressFromList(params);
+
+                            this.createCustomerAddress(params, { setErrors })
+                                .then((response) => {
+                                    this.addAddressToList(response.data.data);
+                                })
+                                .catch((error) => {});
+                        }
                     } else {
-                        this.selectedAddresses[type + '_address_id'] = cartAddress.address_id;
+                        this.updateAddressInList(params);
                     }
                 },
 
-                handleAddressChange() {
-                    if (this.currentStep != 'address') {
-                        this.isAddressUpdated = true;
-                    }
+                addAddressToList(address) {
+                    this.cart[this.activeAddressForm + '_address'] = address;
 
-                    this.$emit('processing', 'address');
+                    this.customerSavedAddresses[this.activeAddressForm].unshift(address);
+
+                    this.selectedAddresses[this.activeAddressForm + '_address_id'] = address.id;
+
+                    this.activeAddressForm = null;
                 },
 
-                moveToNextStep() {
-                    if (this.cart.have_stockable_items) {
-                        this.$emit('processing', 'shipping');
-                    } else {
-                        this.$emit('processing', 'payment');
-                    }
+                updateAddressInList(params) {
+                    this.customerSavedAddresses[this.activeAddressForm].forEach((address, index) => {
+                        if (address.id == params.id) {
+                            params = {
+                                ...address,
+                                ...params,
+                            };
+
+                            this.cart[this.activeAddressForm + '_address'] = params;
+
+                            this.customerSavedAddresses[this.activeAddressForm][index] = params;
+
+                            this.selectedAddresses[this.activeAddressForm + '_address_id'] = params.id;
+
+                            this.activeAddressForm = null;
+                        }
+                    });
+                },
+
+                removeAddressFromList(params) {
+                    this.customerSavedAddresses[this.activeAddressForm] = this.customerSavedAddresses[this.activeAddressForm].filter(address => address.id != params.id);
+                },
+
+                createCustomerAddress(params, { setErrors }) {
+                    this.isStoring = true;
+
+                    return this.$axios.post('{{ route('shop.api.customers.account.addresses.store') }}', params)
+                        .then((response) => {
+                            this.isStoring = false;
+
+                            return response;
+                        })
+                        .catch(error => {
+                            this.isStoring = false;
+
+                            if (error.response?.status == 422) {
+                                let errors = {};
+
+                                Object.keys(error.response.data.errors).forEach(key => {
+                                    errors[this.activeAddressForm + '.' + key] = error.response.data.errors[key];
+                                });
+
+                                setErrors(errors);
+                            }
+
+                            return Promise.reject(error);
+                        });
+                },
+
+                updateCustomerAddress(id, params, { setErrors }) {
+                    this.isStoring = true;
+
+                    return this.$axios.put('{{ route('shop.api.customers.account.addresses.update') }}/' + id, params)
+                        .then((response) => {
+                            this.isStoring = false;
+
+                            return response;
+                        })
+                        .catch(error => {
+                            this.isStoring = false;
+
+                            if (error.response?.status == 422) {
+                                let errors = {};
+
+                                Object.keys(error.response.data.errors).forEach(key => {
+                                    errors[this.activeAddressForm + '.' + key] = error.response.data.errors[key];
+                                });
+
+                                setErrors(errors);
+                            }
+
+                            return Promise.reject(error);
+                        });
                 },
 
                 addAddressToCart(params, { resetForm, setErrors }) {
+                    const billingId = (params && params.billing && params.billing.id) ? params.billing.id : this.selectedAddresses.billing_address_id;
+                    const shippingId = (params && params.shipping && params.shipping.id) ? params.shipping.id : this.selectedAddresses.shipping_address_id;
+
                     let payload = {
                         billing: {
-                            ...this.getSelectedAddress('billing', params.billing.id),
+                            ...this.getSelectedAddress('billing', billingId),
                             use_for_shipping: this.useBillingAddressForShipping
                         },
                     };
 
-                    if (params.shipping !== undefined) {
-                        payload.shipping = this.getSelectedAddress('shipping', params.shipping.id);
+                    if (params?.shipping !== undefined || !this.useBillingAddressForShipping) {
+                        payload.shipping = this.getSelectedAddress('shipping', shippingId);
                     }
 
                     this.isStoring = true;
@@ -463,44 +612,60 @@
 
                             this.$emit('processing', 'address');
 
-                            if (error.response.status == 422) {
-                                setErrors(error.response.data.errors);
+                            if (error.response?.status == 422) {
+                                const billingRegex = /^billing\./;
+
+                                if (error.response.data?.errors && Object.keys(error.response.data.errors).some(key => billingRegex.test(key))) {
+                                    setErrors({
+                                        'billing.id': error.response.data.message
+                                    });
+                                } else if (error.response.data?.errors) {
+                                    setErrors({
+                                        'shipping.id': error.response.data.message
+                                    });
+                                } else {
+                                    this.$emitter.emit('add-flash', { type: 'error', message: error.response.data?.message || 'Error de validación' });
+                                }
                                 return;
                             }
-                            this.$emitter.emit('add-flash', { type: 'error', message: error.response.data.message });
+
+                            this.$emitter.emit('add-flash', { type: 'error', message: error.response?.data?.message || 'Error al guardar la dirección' });
                         });
                 },
 
-                updateOrCreateAddress(params, { resetForm, setErrors }) {
-                    this.isStoring = true;
-                    params[this.activeAddressForm].address_type = 'customer';
+                getSelectedAddress(type, id) {
+                    let address = this.customerSavedAddresses[type]?.find(address => address.id == id);
 
-                    this.$axios.post("{{ route('shop.checkout.onepage.addresses.store') }}", params)
-                        .then((response) => {
-                            this.isStoring = false;
-                            this.isAddressUpdated = false;
+                    if (! address && this.customerSavedAddresses[type]?.length) {
+                        address = this.customerSavedAddresses[type][0];
+                    }
 
-                            if (this.selectedAddressForEdit) {
-                                let addressIndex = this.customerSavedAddresses[this.activeAddressForm].findIndex(address => address.id === this.selectedAddressForEdit.id);
-                                if (addressIndex !== -1) {
-                                    this.customerSavedAddresses[this.activeAddressForm][addressIndex] = response.data.address;
-                                }
-                            } else {
-                                this.customerSavedAddresses[this.activeAddressForm].push(response.data.address);
-                            }
+                    let cloned = Object.assign({}, address || {});
 
-                            this.selectedAddresses[this.activeAddressForm + '_address_id'] = response.data.address.id;
-                            this.activeAddressForm = null;
-                            this.selectedAddressForEdit = null;
-                        })
-                        .catch(error => {
-                            this.isStoring = false;
-                            if (error.response.status == 422) {
-                                setErrors(error.response.data.errors);
-                                return;
-                            }
-                            this.$emitter.emit('add-flash', { type: 'error', message: error.response.data.message });
-                        });
+                    if (id == 0 || ! cloned.id) {
+                        cloned.id = null;
+                    }
+
+                    return {
+                        ...cloned,
+                        default_address: 0,
+                    };
+                },
+
+                handleAddressChange() {
+                    if (this.currentStep != 'address') {
+                        this.isAddressUpdated = true;
+                    }
+
+                    this.$emit('processing', 'address');
+                },
+
+                moveToNextStep() {
+                    if (this.cart.have_stockable_items) {
+                        this.$emit('processing', 'shipping');
+                    } else {
+                        this.$emit('processing', 'payment');
+                    }
                 },
             },
         });
