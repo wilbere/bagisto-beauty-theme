@@ -187,6 +187,7 @@
                 ::attachments="attachments"
                 ::is-image-zooming="isImageZooming"
                 ::initial-index="`media_${activeIndex}`"
+                @close="onZoomerClose"
             />
         </div>
     </script>
@@ -309,6 +310,10 @@
 
                 openZoomer() {
                     this.isImageZooming = true;
+                },
+
+                onZoomerClose() {
+                    this.isImageZooming = false;
                 },
 
                 onMediaLoad() {
