@@ -319,15 +319,21 @@
 
             methods: {
                 getFilters() {
+                    const categoryId = "{{ isset($category) ? $category->id : '' }}";
+
                     this.$axios.get('{{ route("shop.api.categories.attributes") }}', {
-                            params: {
-                                category_id: "{{ isset($category) ? $category->id : ''  }}",
+                            params: categoryId ? { category_id: categoryId } : {}
+                        })
+                        .then((response) => {
+                            if ((!response.data.data || response.data.data.length === 0) && categoryId) {
+                                return this.$axios.get('{{ route("shop.api.categories.attributes") }}');
                             }
+                            return response;
                         })
                         .then((response) => {
                             this.isLoading = false;
 
-                            this.filters.available = response.data.data;
+                            this.filters.available = response.data.data || [];
                         })
                         .catch((error) => {
                             console.error("No se pudieron cargar los filtros:", error);
