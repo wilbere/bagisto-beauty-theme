@@ -17,7 +17,7 @@
     {!! view_render_event('bagisto.shop.checkout.cart.header.before') !!}
     {!! view_render_event('bagisto.shop.checkout.cart.header.after') !!}
 
-    <div class="min-h-[70vh] bg-[#fdfbf7]">
+    <div class="min-h-[70vh] bg-[#fdfbf7] pb-28 lg:pb-0">
         <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 lg:py-12">
             <!-- Breadcrumbs & Quick Store Return Navigation -->
             <div class="mb-6 flex flex-wrap items-center justify-between gap-4">
@@ -315,6 +315,28 @@
                             @include('shop::checkout.cart.summary')
 
                             {!! view_render_event('bagisto.shop.checkout.cart.summary.after') !!}
+                        </div>
+                    </div>
+
+                    <!-- Mobile Sticky Checkout Bottom Bar -->
+                    <div
+                        v-if="cart?.items?.length"
+                        class="fixed bottom-0 inset-x-0 z-40 border-t border-[#ede8dc] bg-white/95 px-4 py-3 shadow-[0_-4px_25px_rgba(0,0,0,0.08)] backdrop-blur-md lg:hidden"
+                    >
+                        <div class="mx-auto flex max-w-lg items-center justify-between gap-4">
+                            <div class="min-w-0">
+                                <span class="block text-[10px] uppercase tracking-wider text-[#71717a]">@lang('shop::app.checkout.cart.summary.grand-total')</span>
+                                <span class="font-editorial text-lg font-bold text-[#18181b] truncate block">
+                                    @{{ cart.formatted_grand_total || cart.formatted_sub_total }}
+                                </span>
+                            </div>
+
+                            <a
+                                href="{{ route('shop.checkout.onepage.index') }}"
+                                class="flex flex-1 items-center justify-center rounded-full bg-[#18181b] px-6 py-3.5 text-xs font-semibold uppercase tracking-wider text-white shadow-xs transition-colors hover:bg-[#9e8464]"
+                            >
+                                @lang('shop::app.checkout.cart.index.proceed-to-checkout') &rarr;
+                            </a>
                         </div>
                     </div>
 

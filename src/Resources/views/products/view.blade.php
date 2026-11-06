@@ -236,18 +236,16 @@
                                     @endif
                                 </div>
 
-                                <!-- Buy Now Button -->
-                                @if (core()->getConfigData('catalog.products.product_view_page.buy_now_button_display'))
-                                    <button
-                                        type="submit"
-                                        class="w-full rounded-full border border-[#18181b] bg-white py-3 text-xs font-semibold uppercase tracking-widest text-[#18181b] transition-all hover:bg-[#18181b] hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
-                                        :disabled="!{{ $product->isSaleable(1) ? 'true' : 'false' }} || isStoring.buyNow"
-                                        @click="is_buy_now = 1"
-                                    >
-                                        <span v-if="isStoring.buyNow">@lang('beauty::app.products.processing')</span>
-                                        <span v-else>@lang('shop::app.products.view.buy-now')</span>
-                                    </button>
-                                @endif
+                                <!-- Buy Now Button (Direct to Checkout) -->
+                                <button
+                                    type="submit"
+                                    class="w-full rounded-full border border-[#18181b] bg-white py-3.5 text-xs font-semibold uppercase tracking-widest text-[#18181b] shadow-2xs transition-all hover:bg-[#18181b] hover:text-white active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-50"
+                                    :disabled="!{{ $product->isSaleable(1) ? 'true' : 'false' }} || isStoring.buyNow"
+                                    @click="is_buy_now = 1"
+                                >
+                                    <span v-if="isStoring.buyNow">@lang('beauty::app.products.processing')</span>
+                                    <span v-else>@lang('shop::app.products.view.buy-now')</span>
+                                </button>
                             </div>
 
                             <!-- Trust Badges List -->
@@ -277,9 +275,9 @@
                     <!-- Sticky Mobile Buy Bar -->
                     <div
                         id="pdp-sticky-mobile-bar"
-                        class="fixed bottom-0 inset-x-0 z-40 border-t border-[#ede8dc] bg-[#fdfbf7]/95 px-4 py-3 shadow-xl backdrop-blur-md transition-all duration-300 translate-y-full opacity-0 pointer-events-none lg:hidden"
+                        class="fixed bottom-0 inset-x-0 z-40 border-t border-[#ede8dc] bg-[#fdfbf7]/95 px-4 py-2.5 shadow-xl backdrop-blur-md transition-all duration-300 translate-y-full opacity-0 pointer-events-none lg:hidden"
                     >
-                        <div class="flex items-center justify-between gap-4">
+                        <div class="flex items-center justify-between gap-3">
                             <div class="min-w-0 flex-1">
                                 <p class="truncate text-xs font-medium text-[#18181b]" v-pre>{{ $product->name }}</p>
                                 <div class="text-sm font-bold text-[#18181b]">
@@ -287,15 +285,28 @@
                                 </div>
                             </div>
 
-                            <button
-                                type="submit"
-                                class="shrink-0 rounded-full bg-[#18181b] px-6 py-2.5 text-xs font-semibold uppercase tracking-wider text-white shadow-xs transition-colors hover:bg-[#d4a373]"
-                                :disabled="!{{ $product->isSaleable(1) ? 'true' : 'false' }} || isStoring.addToCart"
-                                @click="is_buy_now = 0"
-                            >
-                                <span v-if="isStoring.addToCart">...</span>
-                                <span v-else>@lang('shop::app.products.view.add-to-cart')</span>
-                            </button>
+                            <div class="flex items-center gap-2">
+                                <button
+                                    type="submit"
+                                    class="shrink-0 rounded-full border border-[#ede8dc] bg-white px-3.5 py-2.5 text-xs font-semibold text-[#18181b] shadow-2xs transition-colors hover:border-[#9e8464] hover:bg-[#f7f5f0]"
+                                    :disabled="!{{ $product->isSaleable(1) ? 'true' : 'false' }} || isStoring.addToCart"
+                                    @click="is_buy_now = 0"
+                                    title="@lang('shop::app.products.view.add-to-cart')"
+                                    aria-label="@lang('shop::app.products.view.add-to-cart')"
+                                >
+                                    <span class="icon-cart text-base" role="presentation"></span>
+                                </button>
+
+                                <button
+                                    type="submit"
+                                    class="shrink-0 rounded-full bg-[#18181b] px-5 py-2.5 text-xs font-semibold uppercase tracking-wider text-white shadow-xs transition-colors hover:bg-[#9e8464]"
+                                    :disabled="!{{ $product->isSaleable(1) ? 'true' : 'false' }} || isStoring.buyNow"
+                                    @click="is_buy_now = 1"
+                                >
+                                    <span v-if="isStoring.buyNow">...</span>
+                                    <span v-else>@lang('shop::app.products.view.buy-now')</span>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </form>

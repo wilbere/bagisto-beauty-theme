@@ -14,7 +14,7 @@
         @lang('shop::app.checkout.onepage.index.checkout')
     </x-slot>
 
-    <div class="min-h-screen bg-[#fdfbf7] py-8 sm:py-12">
+    <div class="min-h-screen bg-[#fdfbf7] py-8 pb-28 sm:py-12 lg:pb-12">
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <!-- Top Context Navigation -->
             <div class="mb-8 flex flex-wrap items-center justify-between gap-4 border-b border-[#ede8dc] pb-5">
@@ -94,6 +94,102 @@
                         <template v-if="['payment', 'review'].includes(currentStep)">
                             @include('shop::checkout.onepage.payment')
                         </template>
+
+                        <!-- Mobile In-Flow Place Order Card (shown when review/payment step reached) -->
+                        <div
+                            class="block lg:hidden rounded-3xl border border-[#ede8dc] bg-white p-6 shadow-xs"
+                            v-if="canPlaceOrder"
+                        >
+                            <div class="flex items-center justify-between pb-4 border-b border-[#ede8dc]">
+                                <div>
+                                    <span class="text-xs text-[#71717a]">Total a Pagar</span>
+                                    <p class="font-editorial text-2xl font-bold text-[#18181b]">
+                                        @{{ cart.formatted_grand_total }}
+                                    </p>
+                                </div>
+                                <span class="rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700">
+                                    Paso Final
+                                </span>
+                            </div>
+
+                            <div class="mt-4">
+                                <template v-if="(selectedPaymentMethod || cart.payment_method) == 'paypal_smart_button'">
+                                    <v-paypal-smart-button></v-paypal-smart-button>
+                                </template>
+
+                                <template v-else>
+                                    <button
+                                        type="button"
+                                        class="flex w-full cursor-pointer items-center justify-center rounded-full bg-[#18181b] px-8 py-4 text-xs font-semibold uppercase tracking-wider text-white shadow-md transition-colors hover:bg-[#9e8464] disabled:cursor-not-allowed disabled:opacity-50"
+                                        :disabled="isPlacingOrder"
+                                        @click="placeOrder"
+                                    >
+                                        <svg
+                                            v-if="isPlacingOrder"
+                                            class="mr-2 h-4 w-4 animate-spin text-white"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                        >
+                                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                        </svg>
+
+                                        <span v-if="! isPlacingOrder">
+                                            @lang('shop::app.checkout.onepage.summary.place-order')
+                                        </span>
+                                        <span v-else>
+                                            @lang('beauty::app.products.processing')
+                                        </span>
+                                    </button>
+                                </template>
+                            </div>
+
+                            <div class="mt-4 flex items-center justify-center gap-2 text-xs text-[#71717a]">
+                                <span class="icon-gdpr-safe text-sm text-[#9e8464]"></span>
+                                <span>Compra 100% protegida y garantizada</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Mobile Sticky Bottom Checkout Bar -->
+                    <div
+                        v-if="canPlaceOrder"
+                        class="fixed bottom-0 inset-x-0 z-40 border-t border-[#ede8dc] bg-white/95 px-4 py-3 shadow-[0_-4px_25px_rgba(0,0,0,0.08)] backdrop-blur-md lg:hidden"
+                    >
+                        <div class="mx-auto flex max-w-lg items-center justify-between gap-4">
+                            <div class="min-w-0">
+                                <span class="block text-[10px] uppercase tracking-wider text-[#71717a]">Total</span>
+                                <span class="font-editorial text-lg font-bold text-[#18181b] truncate block">
+                                    @{{ cart.formatted_grand_total }}
+                                </span>
+                            </div>
+
+                            <button
+                                type="button"
+                                class="flex flex-1 cursor-pointer items-center justify-center rounded-full bg-[#18181b] px-6 py-3.5 text-xs font-semibold uppercase tracking-wider text-white shadow-xs transition-colors hover:bg-[#9e8464] disabled:cursor-not-allowed disabled:opacity-50"
+                                :disabled="isPlacingOrder"
+                                @click="placeOrder"
+                            >
+                                <svg
+                                    v-if="isPlacingOrder"
+                                    class="mr-2 h-4 w-4 animate-spin text-white"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+
+                                <span v-if="! isPlacingOrder">
+                                    @lang('shop::app.checkout.onepage.summary.place-order')
+                                </span>
+                                <span v-else>
+                                    @lang('beauty::app.products.processing')
+                                </span>
+                            </button>
+                        </div>
                     </div>
 
                     <!-- Included Checkout Summary Blade File For Desktop view -->

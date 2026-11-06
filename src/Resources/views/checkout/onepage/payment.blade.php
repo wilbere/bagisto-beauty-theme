@@ -47,37 +47,66 @@
                         <input 
                             type="radio" 
                             name="payment[method]" 
-                            :value="payment.payment"
+                            :value="payment.method"
                             :id="payment.method"
+                            :checked="selectedMethodCode === payment.method"
                             class="peer sr-only"
                             @change="store(payment)"
                         >
 
                         <label
                             :for="payment.method"
-                            class="flex cursor-pointer items-start gap-4 rounded-2xl border border-[#ede8dc] bg-white p-5 transition-all hover:border-[#9e8464] hover:shadow-xs peer-checked:border-[#18181b] peer-checked:bg-[#fdfbf7] peer-checked:ring-1 peer-checked:ring-[#18181b]"
+                            class="flex cursor-pointer flex-col rounded-2xl border bg-white p-5 transition-all"
+                            :class="selectedMethodCode === payment.method ? 'border-[#18181b] bg-[#fdfbf7] ring-2 ring-[#18181b] shadow-xs' : 'border-[#ede8dc] hover:border-[#9e8464] hover:shadow-2xs'"
                         >
-                            <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-[#ede8dc] bg-[#fdfbf7] p-2">
-                                <img
-                                    v-if="payment.image"
-                                    class="max-h-8 max-w-8 object-contain"
-                                    :src="payment.image"
-                                    :alt="payment.method_title"
-                                    :title="payment.method_title"
-                                />
-                                <span
-                                    v-else
-                                    class="icon-payment text-2xl text-[#9e8464]"
-                                ></span>
+                            <div class="flex items-start gap-4">
+                                <div
+                                    class="mt-1 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border transition-all"
+                                    :class="selectedMethodCode === payment.method ? 'border-[#18181b] bg-[#18181b]' : 'border-[#d4cebe] bg-white'"
+                                >
+                                    <span v-if="selectedMethodCode === payment.method" class="h-2 w-2 rounded-full bg-white"></span>
+                                </div>
+
+                                <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-[#ede8dc] bg-[#fdfbf7] p-2">
+                                    <img
+                                        v-if="payment.image"
+                                        class="max-h-8 max-w-8 object-contain"
+                                        :src="payment.image"
+                                        :alt="payment.method_title"
+                                        :title="payment.method_title"
+                                    />
+                                    <span
+                                        v-else
+                                        class="icon-payment text-2xl text-[#9e8464]"
+                                    ></span>
+                                </div>
+
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-sm font-semibold text-[#18181b]">
+                                        @{{ payment.method_title }}
+                                    </p>
+                                    <p class="mt-1 text-xs text-[#71717a]">
+                                        @{{ payment.description }}
+                                    </p>
+                                </div>
                             </div>
 
-                            <div class="flex-1">
-                                <p class="text-sm font-semibold text-[#18181b]">
-                                    @{{ payment.method_title }}
+                            <!-- Explanatory Payment Instructions Card (Shown when selected) -->
+                            <div
+                                v-if="selectedMethodCode === payment.method"
+                                class="mt-4 rounded-xl border border-[#ede8dc] bg-white p-3.5 text-xs text-[#52525b]"
+                            >
+                                <div class="flex items-center gap-2 font-semibold text-[#18181b] mb-1">
+                                    <span class="icon-information text-base text-[#9e8464]"></span>
+                                    <span>Instrucciones del Método de Pago</span>
+                                </div>
+                                <p class="leading-relaxed text-[#71717a]">
+                                    @{{ payment.description || 'Al presionar "Realizar Pedido", se confirmará tu compra y recibirás los datos e instrucciones correspondientes para completar tu pago de forma segura.' }}
                                 </p>
-                                <p class="mt-1 text-xs text-[#71717a]">
-                                    @{{ payment.description }}
-                                </p>
+                                <div class="mt-2.5 flex items-center gap-2 text-[11px] text-[#71717a]">
+                                    <span class="inline-block h-1.5 w-1.5 rounded-full bg-emerald-600"></span>
+                                    <span>Garantía de procesamiento seguro y soporte personalizado</span>
+                                </div>
                             </div>
                         </label>
 
@@ -104,8 +133,16 @@
 
             emits: ['payment-method-selected', 'processing', 'processed'],
 
+            data() {
+                return {
+                    selectedMethodCode: null,
+                };
+            },
+
             methods: {
                 store(selectedMethod) {
+                    this.selectedMethodCode = selectedMethod.method;
+
                     this.$emit('payment-method-selected', selectedMethod.method);
 
                     this.$emit('processing', 'review');

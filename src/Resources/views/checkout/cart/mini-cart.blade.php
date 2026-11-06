@@ -329,18 +329,15 @@
                     this.cart = cart;
                 });
 
-                this.$emitter.on('cart:open', () => {
-                    if (this.$el && this.$el.offsetParent !== null) {
-                        this.openDrawer();
-                    }
-                });
+                const triggerOpen = () => {
+                    if (this.isOpen) return;
+                    this.openDrawer();
+                };
+
+                this.$emitter.on('cart:open', triggerOpen);
 
                 if (window.beautyEmitter) {
-                    window.beautyEmitter.on('cart:open', () => {
-                        if (this.$el && this.$el.offsetParent !== null) {
-                            this.openDrawer();
-                        }
-                    });
+                    window.beautyEmitter.on('cart:open', triggerOpen);
 
                     window.beautyEmitter.on('cart:updated', (cart) => {
                         this.cart = cart;

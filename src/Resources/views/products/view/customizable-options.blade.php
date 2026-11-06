@@ -64,11 +64,9 @@
                 <div class="border-b border-[#ede8dc]/80 pb-5 last:border-b-0 last:pb-0">
                     <!-- Option Header: Label + Selected value readout -->
                     <div class="mb-3 flex items-center justify-between text-xs">
-                        <span
-                            class="font-semibold uppercase tracking-wider text-[#18181b]"
-                            :class="{ 'after:content-[\"*\"] after:ml-0.5 after:text-rose-500': Boolean(option.is_required) }"
-                        >
+                        <span class="font-semibold uppercase tracking-wider text-[#18181b]">
                             @{{ option.label }}
+                            <span v-if="Boolean(option.is_required)" class="ml-0.5 text-rose-500" aria-hidden="true">*</span>
                         </span>
 
                         <span class="text-[#71717a]" v-if="selectedOptionLabel">
